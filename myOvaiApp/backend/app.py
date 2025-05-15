@@ -1,12 +1,19 @@
 from flask import Flask, request, jsonify
+import os
 import firebase_admin
-from firebase_admin import credentials, auth
+from firebase_admin import credentials, auth, initialize_app
 
 # Initialize Flask app
 app = Flask(__name__)
 
 # Initialize Firebase Admin SDK
-cred = credentials.Certificate("./myovai-firebase-adminsdk-fbsvc-441f590eb8.json")
+# Get the key path from an environment variable
+key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+if not key_path:
+    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS variable is not available.")
+
+cred = credentials.Certificate(key_path)
 firebase_admin.initialize_app(cred)
 
 # Route to sign up users
