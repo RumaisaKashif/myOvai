@@ -1,9 +1,20 @@
 import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signOut } from 'firebase/auth';
+import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
+import { useEffect, useState } from 'react';
+import LoginScreen from '../auth/login'; // Adjust path to your LoginScreen
 
 export default function HomeScreen() {
+  const [isLoggedIn, setIsLoggedIn] = useState(!!auth.currentUser);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -12,6 +23,14 @@ export default function HomeScreen() {
       console.error('Error logging out:', error);
     }
   };
+
+  if (!isLoggedIn) {
+    return (
+      <View style={styles.fullScreen}>
+        <LoginScreen />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -28,6 +47,16 @@ export default function HomeScreen() {
 // Note: renaming this file causes errors
 
 const styles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#f0f0f0', // Match LoginScreen background
+    zIndex: 999, // Ensure it covers tabs
+  },
   container: {
     flex: 1,
     alignItems: 'center',
