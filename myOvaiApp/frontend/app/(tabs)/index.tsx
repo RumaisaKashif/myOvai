@@ -3,7 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
 import { useEffect, useState } from 'react';
-import LoginScreen from '../auth/login'; // Adjust path to your LoginScreen
+import LoginScreen from '../auth/login'; // Temporary fix for logout 
 
 export default function HomeScreen() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!auth.currentUser);
@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#f0f0f0', // Match LoginScreen background
-    zIndex: 999, // Ensure it covers tabs
+    backgroundColor: '#602495', 
+    zIndex: 999, 
   },
   container: {
     flex: 1,
@@ -78,10 +78,10 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     alignItems: "center",
-    padding: 10, // Space around the text inside the box
+    padding: 10, 
     backgroundColor: "#602495",
-    borderWidth: 1, // Border thickness
-    borderBottomColor: "white", // Border color
+    borderWidth: 1, 
+    borderBottomColor: "white", 
   },
   logoutButton: {
     backgroundColor: "#602495",
