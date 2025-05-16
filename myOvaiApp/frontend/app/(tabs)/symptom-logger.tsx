@@ -33,9 +33,9 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     alignItems: "center",
-    padding: 10, // Space around the text inside the box
+    padding: 10, 
     backgroundColor: "#602495",
-    borderWidth: 1, // Border thickness
-    borderBottomColor: "white", // Border color
+    borderWidth: 1, 
+    borderBottomColor: "white", 
   }
 });
