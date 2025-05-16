@@ -5,12 +5,12 @@ import { Stack } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { Text, View, ActivityIndicator} from 'react-native'; // Add for loading screen
+import { Text, View, ActivityIndicator} from 'react-native'; 
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // Add loading state
+  const [isLoading, setIsLoading] = useState(true); 
   const [fontsLoaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -19,13 +19,13 @@ export default function RootLayout() {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
-      setIsLoading(false); // Set loading to false once auth state is determined
+      setIsLoading(false); 
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Wait for both fonts and auth state to load
+  // Wait for loading to complete
   if (isLoading || !fontsLoaded) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
