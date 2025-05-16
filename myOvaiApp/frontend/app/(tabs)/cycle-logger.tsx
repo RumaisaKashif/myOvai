@@ -1,10 +1,7 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, Text } from 'react-native';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
-// import { ThemedText } from '@/components/ThemedText';
-// import { ThemedView } from '@/components/ThemedView';
-// import { IconSymbol } from '@/components/ui/IconSymbol';
+
 
 export default function CycleLoggerScreen() {
   return (
@@ -38,9 +35,9 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     alignItems: "center",
-    padding: 10, // Space around the text inside the box
+    padding: 10, 
     backgroundColor: "#602495",
-    borderWidth: 1, // Border thickness
-    borderBottomColor: "white", // Border color
+    borderWidth: 1, 
+    borderBottomColor: "white", 
   }
 });
