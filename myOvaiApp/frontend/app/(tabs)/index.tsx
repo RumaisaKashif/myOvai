@@ -3,14 +3,18 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { signOut, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
 import { useEffect, useState } from 'react';
-import LoginScreen from '../auth/login'; // Temporary fix for logout 
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!auth.currentUser);
+  const router = useRouter();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setIsLoggedIn(!!user);
+      if (!user) {
+        router.replace('/auth/login');  // Redirect if not logged in
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -25,11 +29,8 @@ export default function HomeScreen() {
   };
 
   if (!isLoggedIn) {
-    return (
-      <View style={styles.fullScreen}>
-        <LoginScreen />
-      </View>
-    );
+    // show a loading or empty view while redirecting
+    return <View style={styles.fullScreen}></View>;
   }
 
   return (
@@ -88,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     position: 'absolute',
     bottom: 20,
-    width: '10%',
+    width: '30%',
     alignItems: 'center',
   },
   logoutText: { 
