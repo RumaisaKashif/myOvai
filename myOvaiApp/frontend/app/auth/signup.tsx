@@ -1,56 +1,152 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, TextInput, Button, Text, StyleSheet, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { createUserWithEmailAndPassword, 
+import { 
+    createUserWithEmailAndPassword, 
     sendEmailVerification, 
-    signOut } from 'firebase/auth';
+    signOut,
+    signInWithCredential,
+    GoogleAuthProvider 
+} from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '../../firebaseConfig';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
+
+// Complete the auth session
+WebBrowser.maybeCompleteAuthSession();
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+
+  // Configure Google Auth
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    iosClientId: '676509692331-fhlmlsfutai7b52ml33ffb0gjel4nc91.apps.googleusercontent.com',
+    webClientId: '676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com'
+  });
+
+  // Handle Google Sign-In response
+  React.useEffect(() => {
+    if (response?.type === 'success') {
+      const { authentication } = response;
+      handleGoogleSignIn(authentication);
+    }
+  }, [response]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   };
 
-  const handleSignUp = async () => {
+  const handleEmailSignUp = async () => {
     setError(null);
+    setIsLoading(true);
+    
     if (!email || !password) {
       setError('Email and password are required.');
+      setIsLoading(false);
       return;
     }
     if (!validateEmail(email)) {
       setError('Please enter a valid email address (e.g., user@example.com).');
+      setIsLoading(false);
       return;
     }
     if (password.length < 6) {
       setError('Password must be at least 6 characters long.');
+      setIsLoading(false);
       return;
     }
+    
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
+      
       // Send verification email
       await sendEmailVerification(user);
-      alert('A verification email has been sent to your email address. Please verify before logging in.');
+      Alert.alert(
+        'Verification Email Sent',
+        'A verification email has been sent to your email address. Please verify before logging in.',
+        [{ text: 'OK' }]
+      );
+      
       // Log out the user to prevent access before verification
       await signOut(auth);
     } catch (err) {
       const errorMessage = err instanceof FirebaseError ? err.message : 'An unknown error occurred';
       setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async (authentication: any) => {
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const { idToken, accessToken } = authentication;
+      const credential = GoogleAuthProvider.credential(idToken, accessToken);
+      
+      const userCredential = await signInWithCredential(auth, credential);
+      const user = userCredential.user;
+      
+      Alert.alert(
+        'Success',
+        'Successfully signed up with Google!',
+        [{ 
+          text: 'OK', 
+          onPress: () => router.replace('/') // Navigate to your main app screen
+        }]
+      );
+      
+    } catch (err) {
+      const errorMessage = err instanceof FirebaseError ? err.message : 'Google sign-in failed';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignUp = async () => {
+    try {
+      await promptAsync();
+    } catch (err) {
+      setError('Failed to initiate Google sign-in');
     }
   };
 
   return (
     <View style={styles.container}>
-        <SafeAreaView style={styles.title}>
-            <Text style={styles.titleText}>Signup for myOvai</Text>
-        </SafeAreaView>
+      <SafeAreaView style={styles.title}>
+        <Text style={styles.titleText}>Signup for myOvai</Text>
+      </SafeAreaView>
+      
+      {/* Google Sign-In Button - Prominently placed */}
+      <View style={styles.googleButtonContainer}>
+        <TouchableOpacity 
+          style={[styles.googleButton, isLoading && styles.disabledButton]}
+          onPress={handleGoogleSignUp}
+          disabled={!request || isLoading}
+        >
+          <Text style={styles.googleButtonText}>
+            {isLoading ? 'Signing Up...' : 'Sign in with Google'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      
+      {/* Divider */}
+      <View style={styles.divider}>
+        <View style={styles.dividerLine} />
+        <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
+        <View style={styles.dividerLine} />
+      </View>
+      
+      {/* Email/Password Section */}
       <Text style={styles.label}>Email</Text>
       <TextInput
         style={styles.input}
@@ -62,6 +158,7 @@ export default function SignUpScreen() {
         placeholder="Enter your email"
         keyboardType="email-address"
         autoCapitalize="none"
+        editable={!isLoading}
       />
       <Text style={styles.label}>Password</Text>
       <TextInput
@@ -73,9 +170,22 @@ export default function SignUpScreen() {
         }}
         placeholder="Enter your password"
         secureTextEntry
+        editable={!isLoading}
       />
       {error && <Text style={styles.error}>{error}</Text>}
-      <Button title="Sign Up" onPress={handleSignUp} />
+      
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={[styles.emailButton, isLoading && styles.disabledButton]} 
+          onPress={handleEmailSignUp}
+          disabled={isLoading}
+        >
+          <Text style={styles.buttonText}>
+            {isLoading ? 'Signing Up...' : 'Sign Up with Email'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      
       <View style={styles.linksContainer}>
         <Text style={styles.linkText}>
           Already have an account?{' '}
@@ -89,50 +199,104 @@ export default function SignUpScreen() {
 }
 
 const styles = StyleSheet.create({
-    title: { 
-        marginBottom: 200,
-        alignItems: 'center'
-    },
-    titleText: { 
-        marginBottom: 200,
-        color: "white",
-        fontSize: 30,
-        alignItems: "center",
-    },
-    container: {
-        backgroundColor: '#602495',
-        flex: 1,
-        padding: 16,
-        justifyContent: 'center',
-    },
-    label: {
-        color: "white",
-        fontSize: 16,
-        marginBottom: 8,
-    },
-    input: {
-        backgroundColor: "grey",
-        color: "white",
-        borderWidth: 1,
-        padding: 8,
-        marginBottom: 16,
-        borderRadius: 4,
-    },
-    error: {
-        color: 'red',
-        marginBottom: 16,
-    },
-    linksContainer: {
-        marginTop: 16,
-        alignItems: 'center',
-    },
-    linkText: {
-        color: "white",
-        fontSize: 14,
-        marginVertical: 4,
-    },
-    link: {
-        color: 'blue',
-        textDecorationLine: 'underline',
-    },
+  title: { 
+    marginBottom: 50,
+    alignItems: 'center'
+  },
+  titleText: { 
+    color: "white",
+    fontSize: 30,
+    textAlign: "center",
+  },
+  googleButtonContainer: {
+    marginBottom: 30,
+    paddingHorizontal: 20,
+  },
+  container: {
+    backgroundColor: '#602495',
+    flex: 1,
+    padding: 16,
+    justifyContent: 'center',
+  },
+  label: {
+    color: "white",
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: "grey",
+    color: "white",
+    borderWidth: 1,
+    padding: 8,
+    marginBottom: 16,
+    borderRadius: 4,
+  },
+  error: {
+    color: 'red',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    marginVertical: 8,
+  },
+  emailButton: {
+    backgroundColor: '#4A90E2',
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  googleButton: {
+    backgroundColor: '#DB4437',
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  disabledButton: {
+    opacity: 0.6,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  googleButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    letterSpacing: 0.5,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: 'white',
+    opacity: 0.5,
+  },
+  dividerText: {
+    color: 'white',
+    marginHorizontal: 10,
+    fontSize: 14,
+  },
+  linksContainer: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  linkText: {
+    color: "white",
+    fontSize: 14,
+    marginVertical: 4,
+  },
+  link: {
+    color: 'blue',
+    textDecorationLine: 'underline',
+  },
 });
