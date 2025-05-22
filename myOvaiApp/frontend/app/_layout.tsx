@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { Text, View, ActivityIndicator} from 'react-native'; 
+import { auth } from '../firebaseConfig'
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -16,7 +17,7 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    const auth = getAuth();
+    // const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setIsLoading(false); 
