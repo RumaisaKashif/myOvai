@@ -68,14 +68,13 @@ export default function SignUpScreen() {
       
       // Send verification email
       await sendEmailVerification(user);
-      Alert.alert(
-        'Verification Email Sent',
-        'A verification email has been sent to your email address. Please verify before logging in.',
-        [{ text: 'OK' }]
-      );
       
       // Log out the user to prevent access before verification
       await signOut(auth);
+      
+      // Automatically redirect to login page
+      router.replace('/auth/login');
+      
     } catch (err) {
       const errorMessage = err instanceof FirebaseError ? err.message : 'An unknown error occurred';
       setError(errorMessage);
@@ -95,17 +94,14 @@ export default function SignUpScreen() {
       const userCredential = await signInWithCredential(auth, credential);
       const user = userCredential.user;
       
-      Alert.alert(
-        'Success',
-        'Successfully signed up with Google!',
-        [{ 
-          text: 'OK', 
-          onPress: () => router.replace('/') // Navigate to your main app screen
-        }]
-      );
+      // Sign out the user after successful registration
+      await signOut(auth);
+      
+      // Automatically redirect to login page without alert
+      router.replace('/auth/login');
       
     } catch (err) {
-      const errorMessage = err instanceof FirebaseError ? err.message : 'Google sign-in failed';
+      const errorMessage = err instanceof FirebaseError ? err.message : 'Google sign-up failed';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -116,7 +112,7 @@ export default function SignUpScreen() {
     try {
       await promptAsync();
     } catch (err) {
-      setError('Failed to initiate Google sign-in');
+      setError('Failed to initiate Google sign-up');
     }
   };
 
@@ -126,7 +122,7 @@ export default function SignUpScreen() {
         <Text style={styles.titleText}>Signup for myOvai</Text>
       </SafeAreaView>
       
-      {/* Google Sign-In Button - Prominently placed */}
+      {/* Google Sign-Up Button - Prominently placed */}
       <View style={styles.googleButtonContainer}>
         <TouchableOpacity 
           style={[styles.googleButton, isLoading && styles.disabledButton]}
@@ -134,7 +130,7 @@ export default function SignUpScreen() {
           disabled={!request || isLoading}
         >
           <Text style={styles.googleButtonText}>
-            {isLoading ? 'Signing Up...' : 'Sign in with Google'}
+            {isLoading ? 'Signing Up...' : 'Sign up with Google'}
           </Text>
         </TouchableOpacity>
       </View>
