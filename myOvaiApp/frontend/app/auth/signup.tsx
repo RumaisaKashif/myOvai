@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { 
+  View, 
+  TextInput, 
+  Button, 
+  Text, 
+  StyleSheet, 
+  SafeAreaView, 
+  TouchableOpacity, 
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
+} from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { 
     createUserWithEmailAndPassword, 
@@ -68,14 +80,13 @@ export default function SignUpScreen() {
       
       // Send verification email
       await sendEmailVerification(user);
-      Alert.alert(
-        'Verification Email Sent',
-        'A verification email has been sent to your email address. Please verify before logging in.',
-        [{ text: 'OK' }]
-      );
       
       // Log out the user to prevent access before verification
       await signOut(auth);
+      
+      // Automatically redirect to login page
+      router.replace('/auth/login');
+      
     } catch (err) {
       const errorMessage = err instanceof FirebaseError ? err.message : 'An unknown error occurred';
       setError(errorMessage);
@@ -95,17 +106,14 @@ export default function SignUpScreen() {
       const userCredential = await signInWithCredential(auth, credential);
       const user = userCredential.user;
       
-      Alert.alert(
-        'Success',
-        'Successfully signed up with Google!',
-        [{ 
-          text: 'OK', 
-          onPress: () => router.replace('/') // Navigate to your main app screen
-        }]
-      );
+      // Sign out the user after successful registration
+      await signOut(auth);
+      
+      // Automatically redirect to login page without alert
+      router.replace('/auth/login');
       
     } catch (err) {
-      const errorMessage = err instanceof FirebaseError ? err.message : 'Google sign-in failed';
+      const errorMessage = err instanceof FirebaseError ? err.message : 'Google sign-up failed';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -116,89 +124,119 @@ export default function SignUpScreen() {
     try {
       await promptAsync();
     } catch (err) {
-      setError('Failed to initiate Google sign-in');
+      setError('Failed to initiate Google sign-up');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.title}>
-        <Text style={styles.titleText}>Signup for myOvai</Text>
-      </SafeAreaView>
-      
-      {/* Google Sign-In Button - Prominently placed */}
-      <View style={styles.googleButtonContainer}>
-        <TouchableOpacity 
-          style={[styles.googleButton, isLoading && styles.disabledButton]}
-          onPress={handleGoogleSignUp}
-          disabled={!request || isLoading}
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.googleButtonText}>
-            {isLoading ? 'Signing Up...' : 'Sign in with Google'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Divider */}
-      <View style={styles.divider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
-        <View style={styles.dividerLine} />
-      </View>
-      
-      {/* Email/Password Section */}
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          setError(null);
-        }}
-        placeholder="Enter your email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        editable={!isLoading}
-      />
-      <Text style={styles.label}>Password</Text>
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={(text) => {
-          setPassword(text);
-          setError(null);
-        }}
-        placeholder="Enter your password"
-        secureTextEntry
-        editable={!isLoading}
-      />
-      {error && <Text style={styles.error}>{error}</Text>}
-      
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.emailButton, isLoading && styles.disabledButton]} 
-          onPress={handleEmailSignUp}
-          disabled={isLoading}
-        >
-          <Text style={styles.buttonText}>
-            {isLoading ? 'Signing Up...' : 'Sign Up with Email'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      <View style={styles.linksContainer}>
-        <Text style={styles.linkText}>
-          Already have an account?{' '}
-          <Link href="/auth/login" style={styles.link}>
-            Login
-          </Link>
-        </Text>
-      </View>
-    </View>
+          <View style={styles.container}>
+            <View style={styles.title}>
+              <Text style={styles.titleText}>Signup for myOvai</Text>
+            </View>
+            
+            {/* Google Sign-Up Button - Prominently placed */}
+            <View style={styles.googleButtonContainer}>
+              <TouchableOpacity 
+                style={[styles.googleButton, isLoading && styles.disabledButton]}
+                onPress={handleGoogleSignUp}
+                disabled={!request || isLoading}
+              >
+                <Text style={styles.googleIcon}>G</Text>
+                <Text style={styles.googleButtonText}>
+                  {isLoading ? 'Signing Up...' : 'Sign up with Google'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
+            {/* Divider */}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
+              <View style={styles.dividerLine} />
+            </View>
+            
+            {/* Email/Password Section */}
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={(text) => {
+                setEmail(text);
+                setError(null);
+              }}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              editable={!isLoading}
+            />
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                setError(null);
+              }}
+              placeholder="Enter your password"
+              secureTextEntry
+              editable={!isLoading}
+            />
+            {error && <Text style={styles.error}>{error}</Text>}
+            
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity 
+                style={[styles.emailButton, isLoading && styles.disabledButton]} 
+                onPress={handleEmailSignUp}
+                disabled={isLoading}
+              >
+                <Text style={styles.buttonText}>
+                  {isLoading ? 'Signing Up...' : 'Sign Up with Email'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.linksContainer}>
+              <Text style={styles.linkText}>
+                Already have an account?{' '}
+                <Link href="/auth/login" style={styles.link}>
+                  Login
+                </Link>
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#602495',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  container: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'center',
+  },
   title: { 
     marginBottom: 50,
     alignItems: 'center'
@@ -212,11 +250,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingHorizontal: 20,
   },
-  container: {
-    backgroundColor: '#602495',
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
+  googleIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4285f4',
   },
   label: {
     color: "white",
@@ -227,9 +264,10 @@ const styles = StyleSheet.create({
     backgroundColor: "grey",
     color: "white",
     borderWidth: 1,
-    padding: 8,
+    padding: 12,
     marginBottom: 16,
     borderRadius: 4,
+    fontSize: 16,
   },
   error: {
     color: 'red',
@@ -246,15 +284,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   googleButton: {
-    backgroundColor: '#DB4437',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: 'white',
+    padding: 12,
+    borderRadius: 6,
     alignItems: 'center',
-    elevation: 3,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#dadce0',
+    elevation: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   disabledButton: {
     opacity: 0.6,
@@ -265,10 +307,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   googleButtonText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
+    color: '#3c4043',
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
   },
   divider: {
     flexDirection: 'row',
