@@ -129,6 +129,7 @@ export default function SignUpScreen() {
           onPress={handleGoogleSignUp}
           disabled={!request || isLoading}
         >
+          <Text style={styles.googleIcon}>G</Text>
           <Text style={styles.googleButtonText}>
             {isLoading ? 'Signing Up...' : 'Sign up with Google'}
           </Text>
@@ -208,6 +209,11 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     paddingHorizontal: 20,
   },
+  googleIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4285f4',
+  },
   container: {
     backgroundColor: '#602495',
     flex: 1,
@@ -242,15 +248,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   googleButton: {
-    backgroundColor: '#DB4437',
-    padding: 16,
-    borderRadius: 8,
+    backgroundColor: 'white',
+    padding: 12,
+    borderRadius: 6,
     alignItems: 'center',
-    elevation: 3,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#dadce0',
+    elevation: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   disabledButton: {
     opacity: 0.6,
@@ -261,10 +271,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   googleButtonText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-    letterSpacing: 0.5,
+    color: '#3c4043',
+    fontSize: 16,
+    fontWeight: '500',
+    marginLeft: 8,
   },
   divider: {
     flexDirection: 'row',
