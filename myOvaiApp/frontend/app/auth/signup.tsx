@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { 
+  View, 
+  TextInput, 
+  Button, 
+  Text, 
+  StyleSheet, 
+  SafeAreaView, 
+  TouchableOpacity, 
+  Alert,
+  KeyboardAvoidingView,
+  ScrollView,
+  Platform
+} from 'react-native';
 import { Link, useRouter } from 'expo-router';
 import { 
     createUserWithEmailAndPassword, 
@@ -117,85 +129,114 @@ export default function SignUpScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <SafeAreaView style={styles.title}>
-        <Text style={styles.titleText}>Signup for myOvai</Text>
-      </SafeAreaView>
-      
-      {/* Google Sign-Up Button - Prominently placed */}
-      <View style={styles.googleButtonContainer}>
-        <TouchableOpacity 
-          style={[styles.googleButton, isLoading && styles.disabledButton]}
-          onPress={handleGoogleSignUp}
-          disabled={!request || isLoading}
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.googleIcon}>G</Text>
-          <Text style={styles.googleButtonText}>
-            {isLoading ? 'Signing Up...' : 'Sign up with Google'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      {/* Divider */}
-      <View style={styles.divider}>
-        <View style={styles.dividerLine} />
-        <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
-        <View style={styles.dividerLine} />
-      </View>
-      
-      {/* Email/Password Section */}
-      <Text style={styles.label}>Email</Text>
-      <TextInput
-        style={styles.input}
-        value={email}
-        onChangeText={(text) => {
-          setEmail(text);
-          setError(null);
-        }}
-        placeholder="Enter your email"
-        keyboardType="email-address"
-        autoCapitalize="none"
-        editable={!isLoading}
-      />
-      <Text style={styles.label}>Password</Text>
-      <TextInput
-        style={styles.input}
-        value={password}
-        onChangeText={(text) => {
-          setPassword(text);
-          setError(null);
-        }}
-        placeholder="Enter your password"
-        secureTextEntry
-        editable={!isLoading}
-      />
-      {error && <Text style={styles.error}>{error}</Text>}
-      
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity 
-          style={[styles.emailButton, isLoading && styles.disabledButton]} 
-          onPress={handleEmailSignUp}
-          disabled={isLoading}
-        >
-          <Text style={styles.buttonText}>
-            {isLoading ? 'Signing Up...' : 'Sign Up with Email'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      <View style={styles.linksContainer}>
-        <Text style={styles.linkText}>
-          Already have an account?{' '}
-          <Link href="/auth/login" style={styles.link}>
-            Login
-          </Link>
-        </Text>
-      </View>
-    </View>
+          <View style={styles.container}>
+            <View style={styles.title}>
+              <Text style={styles.titleText}>Signup for myOvai</Text>
+            </View>
+            
+            {/* Google Sign-Up Button - Prominently placed */}
+            <View style={styles.googleButtonContainer}>
+              <TouchableOpacity 
+                style={[styles.googleButton, isLoading && styles.disabledButton]}
+                onPress={handleGoogleSignUp}
+                disabled={!request || isLoading}
+              >
+                <Text style={styles.googleIcon}>G</Text>
+                <Text style={styles.googleButtonText}>
+                  {isLoading ? 'Signing Up...' : 'Sign up with Google'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
+            {/* Divider */}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
+              <View style={styles.dividerLine} />
+            </View>
+            
+            {/* Email/Password Section */}
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={styles.input}
+              value={email}
+              onChangeText={(text) => {
+                setEmail(text);
+                setError(null);
+              }}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              editable={!isLoading}
+            />
+            <Text style={styles.label}>Password</Text>
+            <TextInput
+              style={styles.input}
+              value={password}
+              onChangeText={(text) => {
+                setPassword(text);
+                setError(null);
+              }}
+              placeholder="Enter your password"
+              secureTextEntry
+              editable={!isLoading}
+            />
+            {error && <Text style={styles.error}>{error}</Text>}
+            
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity 
+                style={[styles.emailButton, isLoading && styles.disabledButton]} 
+                onPress={handleEmailSignUp}
+                disabled={isLoading}
+              >
+                <Text style={styles.buttonText}>
+                  {isLoading ? 'Signing Up...' : 'Sign Up with Email'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.linksContainer}>
+              <Text style={styles.linkText}>
+                Already have an account?{' '}
+                <Link href="/auth/login" style={styles.link}>
+                  Login
+                </Link>
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#602495',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  container: {
+    flex: 1,
+    padding: 16,
+    justifyContent: 'center',
+  },
   title: { 
     marginBottom: 50,
     alignItems: 'center'
@@ -214,12 +255,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4285f4',
   },
-  container: {
-    backgroundColor: '#602495',
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
   label: {
     color: "white",
     fontSize: 16,
@@ -229,9 +264,10 @@ const styles = StyleSheet.create({
     backgroundColor: "grey",
     color: "white",
     borderWidth: 1,
-    padding: 8,
+    padding: 12,
     marginBottom: 16,
     borderRadius: 4,
+    fontSize: 16,
   },
   error: {
     color: 'red',
