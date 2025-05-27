@@ -84,7 +84,7 @@ export default function SignUpScreen() {
       await signOut(auth);
       
       // Automatically redirect to login page
-      router.replace('/auth/login');
+      router.replace('../(tabs)');
       
     } catch (err) {
       const errorMessage = err instanceof FirebaseError ? err.message : 'An unknown error occurred';
