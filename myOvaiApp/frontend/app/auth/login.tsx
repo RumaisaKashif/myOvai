@@ -8,10 +8,11 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   ScrollView,
-  Platform
+  Platform,
+  Alert
 } from 'react-native';
 import { Link, useRouter } from 'expo-router';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { FirebaseError } from '@firebase/app';
 import { auth } from '../../firebaseConfig';
 import { useGoogleAuth } from '../utils/googleAuthService';
@@ -22,6 +23,10 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isResetLoading, setIsResetLoading] = useState(false);
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+  const [showPasswordResetMessage, setShowPasswordResetMessage] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
   const router = useRouter();
   const { handleGoogleAuth } = useGoogleAuth();
 
@@ -49,6 +54,7 @@ export default function LoginScreen() {
       const user = credentials.user;
       if (!user.emailVerified) {
         setError('Please verify your email to login.');
+        setShowVerificationMessage(true);
         await auth.signOut();
         setIsLoading(false);
         return;
@@ -80,6 +86,109 @@ export default function LoginScreen() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Please enter your email address first.');
+      return;
+    }
+    
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
+    setError(null);
+    setIsResetLoading(true);
+    
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetEmail(email);
+      setShowPasswordResetMessage(true);
+    } catch (err) {
+      if (err instanceof FirebaseError) {
+        switch (err.code) {
+          case 'auth/user-not-found':
+            setError('No account found with this email address.');
+            break;
+          case 'auth/invalid-email':
+            setError('Invalid email address.');
+            break;
+          case 'auth/too-many-requests':
+            setError('Too many requests. Please try again later.');
+            break;
+          default:
+            setError('Failed to send password reset email. Please try again.');
+        }
+      } else {
+        setError('Failed to send password reset email. Please try again.');
+      }
+    } finally {
+      setIsResetLoading(false);
+    }
+  };
+
+  const dismissVerificationMessage = () => {
+    setShowVerificationMessage(false);
+    setError(null);
+  };
+
+  const dismissPasswordResetMessage = () => {
+    setShowPasswordResetMessage(false);
+    setResetEmail('');
+  };
+
+  // Email Verification Confirmation Screen
+  if (showVerificationMessage) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <View style={styles.confirmationContainer}>
+            <Text style={styles.confirmationTitle}>Email Verification Required</Text>
+            <Text style={styles.confirmationText}>
+              Please check your email and click the verification link before logging in.
+            </Text>
+            <Text style={styles.confirmationSubtext}>
+              Didn't receive the email? Check your spam folder or contact support.
+            </Text>
+            <TouchableOpacity 
+              style={styles.confirmationButton}
+              onPress={dismissVerificationMessage}
+            >
+              <Text style={styles.buttonText}>Back to Login</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Password Reset Confirmation Screen
+  if (showPasswordResetMessage) {
+    return (
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.container}>
+          <View style={styles.confirmationContainer}>
+            <Text style={styles.confirmationTitle}>Password Reset Email Sent</Text>
+            <Text style={styles.confirmationText}>
+              We've sent a password reset link to:
+            </Text>
+            <Text style={styles.emailText}>{resetEmail}</Text>
+            <Text style={styles.confirmationSubtext}>
+              Please check your email and follow the instructions to reset your password.
+              If you don't see the email, check your spam folder.
+            </Text>
+            <TouchableOpacity 
+              style={styles.confirmationButton}
+              onPress={dismissPasswordResetMessage}
+            >
+              <Text style={styles.buttonText}>Back to Login</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
       <SafeAreaView style={styles.safeArea}>
         <KeyboardAvoidingView 
@@ -106,7 +215,7 @@ export default function LoginScreen() {
                 >
                   <Text style={styles.googleIcon}>G</Text>
                   <Text style={styles.googleButtonText}>
-                    {isLoading ? 'Signing In...' : 'Sign In with Google'}
+                    {isGoogleLoading ? 'Signing In...' : 'Sign In with Google'}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -130,7 +239,7 @@ export default function LoginScreen() {
                 placeholder="Enter your email"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                editable={!isLoading}
+                editable={!isLoading && !isResetLoading}
               />
               <Text style={styles.label}>Password</Text>
               <TextInput
@@ -142,15 +251,25 @@ export default function LoginScreen() {
                 }}
                 placeholder="Enter your password"
                 secureTextEntry
-                editable={!isLoading}
+                editable={!isLoading && !isResetLoading}
               />
+              
+              {/* Forgot Password Link */}
+              <View style={styles.forgotPasswordContainer}>
+                <TouchableOpacity onPress={handleForgotPassword} disabled={isResetLoading}>
+                  <Text style={[styles.forgotPasswordText, isResetLoading && styles.disabledText]}>
+                    {isResetLoading ? 'Sending reset email...' : 'Forgot Password?'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              
               {error && <Text style={styles.error}>{error}</Text>}
               
               <View style={styles.buttonContainer}>
                 <TouchableOpacity 
-                  style={[styles.emailButton, isLoading && styles.disabledButton]} 
+                  style={[styles.emailButton, (isLoading || isResetLoading) && styles.disabledButton]} 
                   onPress={handleLogin}
-                  disabled={isLoading || isGoogleLoading}
+                  disabled={isLoading || isGoogleLoading || isResetLoading}
                 >
                   <Text style={styles.buttonText}>
                     {isLoading ? 'Logging In...' : 'Login'}
@@ -220,6 +339,18 @@ export default function LoginScreen() {
       marginBottom: 16,
       borderRadius: 4,
       fontSize: 16,
+    },
+    forgotPasswordContainer: {
+      alignItems: 'flex-end',
+      marginBottom: 16,
+    },
+    forgotPasswordText: {
+      color: '#ADD8E6',
+      fontSize: 14,
+      textDecorationLine: 'underline',
+    },
+    disabledText: {
+      opacity: 0.6,
     },
     error: {
       color: 'red',
@@ -292,5 +423,48 @@ export default function LoginScreen() {
     link: {
       color: 'blue',
       textDecorationLine: 'underline',
+    },
+    // Confirmation screen styles
+    confirmationContainer: {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+      padding: 24,
+      borderRadius: 12,
+      alignItems: 'center',
+      marginHorizontal: 16,
+    },
+    confirmationTitle: {
+      color: 'white',
+      fontSize: 24,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 16,
+    },
+    confirmationText: {
+      color: 'white',
+      fontSize: 16,
+      textAlign: 'center',
+      marginBottom: 12,
+      lineHeight: 22,
+    },
+    confirmationSubtext: {
+      color: 'rgba(255, 255, 255, 0.8)',
+      fontSize: 14,
+      textAlign: 'center',
+      marginBottom: 24,
+      lineHeight: 20,
+    },
+    emailText: {
+      color: '#ADD8E6',
+      fontSize: 16,
+      fontWeight: 'bold',
+      textAlign: 'center',
+      marginBottom: 16,
+    },
+    confirmationButton: {
+      backgroundColor: '#4A90E2',
+      padding: 12,
+      borderRadius: 8,
+      alignItems: 'center',
+      minWidth: 150,
     },
   });
