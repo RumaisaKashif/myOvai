@@ -28,13 +28,11 @@ export const useGoogleAuth = () => {
       const user = userCredential.user;
       
       if (isSignUp) {
-        // For sign-up, sign out the user after successful registration
-        await signOut(auth);
-        // Redirect to login page
-        router.replace('/auth/login');
+        // For sign-up, redirect to main app (tabs)
+        router.replace('../(tabs)');
       } else {
         // For sign-in, redirect to main app (tabs)
-        router.replace('/(tabs)');
+        router.replace('../(tabs)');
       }
       
       return { success: true, user };
