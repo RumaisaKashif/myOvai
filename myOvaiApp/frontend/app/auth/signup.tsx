@@ -30,6 +30,7 @@ export default function SignUpScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [createdEmail, setCreatedEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   // Use the Google Auth hook
@@ -54,6 +55,10 @@ export default function SignUpScreen() {
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleEmailSignUp = async () => {
@@ -168,17 +173,29 @@ export default function SignUpScreen() {
               editable={!isLoading}
             />
             <Text style={styles.label}>Password</Text>
-            <TextInput
-              style={[styles.input, { marginBottom: 51 }]} 
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                setError(null);
-              }}
-              placeholder="Enter your password"
-              secureTextEntry
-              editable={!isLoading}
-            />
+            <View style={styles.passwordContainer}>
+              <TextInput
+                style={styles.passwordInput}
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  setError(null);
+                }}
+                placeholder="Enter your password"
+                secureTextEntry={!showPassword}
+                editable={!isLoading}
+              />
+              <TouchableOpacity 
+                style={styles.eyeButton}
+                onPress={togglePasswordVisibility}
+                disabled={isLoading}
+              >
+                <Text style={styles.eyeIcon}>
+                  {showPassword ? '👁️' : '🛡️'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
             {error && <Text style={styles.error}>{error}</Text>}
             
             <View style={styles.buttonContainer}>
@@ -262,6 +279,28 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 4,
     fontSize: 16,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: "grey",
+    borderWidth: 1,
+    borderRadius: 4,
+    marginBottom: 51,
+  },
+  passwordInput: {
+    flex: 1,
+    color: "white",
+    padding: 12,
+    fontSize: 16,
+  },
+  eyeButton: {
+    padding: 12,
+    paddingLeft: 8,
+  },
+  eyeIcon: {
+    fontSize: 20,
+    color: 'white',
   },
   error: {
     color: 'red',
