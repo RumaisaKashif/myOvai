@@ -14,7 +14,6 @@ export const useGoogleAuth = () => {
 
   // Configure Google Auth
   const [request, response, promptAsync] = Google.useAuthRequest({
-    clientId: '676509692331-6o22kt8h7bphpnlsco4og0ifcrem11vm.apps.googleusercontent.com',
     iosClientId: '676509692331-fhlmlsfutai7b52ml33ffb0gjel4nc91.apps.googleusercontent.com',
     webClientId: '676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com',
   });
