@@ -131,7 +131,7 @@ export default function SignUpScreen() {
               >
                 <Text style={styles.googleIcon}>G</Text>
                 <Text style={styles.googleButtonText}>
-                  {isLoading ? 'Signing Up...' : 'Sign up with Google'}
+                  {isLoading ? 'Signing In...' : 'Sign In with Google'}
                 </Text>
               </TouchableOpacity>
             </View>
