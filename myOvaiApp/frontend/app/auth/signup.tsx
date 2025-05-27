@@ -21,12 +21,15 @@ import {
 import { FirebaseError } from 'firebase/app';
 import { auth } from '../../firebaseConfig';
 import { useGoogleAuth } from '../utils/googleAuthService';
+import AccountCreatedPopup from '../utils/accountCreatedScreen';
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [createdEmail, setCreatedEmail] = useState('');
   const router = useRouter();
 
   // Use the Google Auth hook
@@ -83,8 +86,9 @@ export default function SignUpScreen() {
       // Log out the user to prevent access before verification
       await signOut(auth);
       
-      // Automatically redirect to login page
-      router.replace('/auth/login');
+      // Show success popup instead of immediate redirect
+      setCreatedEmail(email);
+      setShowSuccessPopup(true);
       
     } catch (err) {
       const errorMessage = err instanceof FirebaseError ? err.message : 'An unknown error occurred';
@@ -103,6 +107,12 @@ export default function SignUpScreen() {
       setError(result.error);
     }
     setIsLoading(false);
+  };
+
+  const handleClosePopup = () => {
+    setShowSuccessPopup(false);
+    // Redirect to login after closing popup
+    router.replace('/auth/login');
   };
 
   return (
@@ -194,6 +204,13 @@ export default function SignUpScreen() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {/* Account Created Popup */}
+      <AccountCreatedPopup
+        visible={showSuccessPopup}
+        onClose={handleClosePopup}
+        email={createdEmail}
+      />
     </SafeAreaView>
   );
 }
