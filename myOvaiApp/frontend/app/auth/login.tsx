@@ -27,12 +27,17 @@ export default function LoginScreen() {
   const [showVerificationMessage, setShowVerificationMessage] = useState(false);
   const [showPasswordResetMessage, setShowPasswordResetMessage] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { handleGoogleAuth } = useGoogleAuth();
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   const handleLogin = async () => {
@@ -242,17 +247,28 @@ export default function LoginScreen() {
                 editable={!isLoading && !isResetLoading}
               />
               <Text style={styles.label}>Password</Text>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={(text) => {
-                  setPassword(text);
-                  setError(null);
-                }}
-                placeholder="Enter your password"
-                secureTextEntry
-                editable={!isLoading && !isResetLoading}
-              />
+              <View style={styles.passwordContainer}>
+                <TextInput
+                  style={styles.passwordInput}
+                  value={password}
+                  onChangeText={(text) => {
+                    setPassword(text);
+                    setError(null);
+                  }}
+                  placeholder="Enter your password"
+                  secureTextEntry={!showPassword}
+                  editable={!isLoading && !isResetLoading}
+                />
+                <TouchableOpacity 
+                  style={styles.eyeButton}
+                  onPress={togglePasswordVisibility}
+                  disabled={isLoading || isResetLoading}
+                >
+                  <Text style={styles.eyeIcon}>
+                    {showPassword ? '👁️' : '🛡️'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
               
               {/* Forgot Password Link */}
               <View style={styles.forgotPasswordContainer}>
@@ -339,6 +355,28 @@ export default function LoginScreen() {
       marginBottom: 16,
       borderRadius: 4,
       fontSize: 16,
+    },
+    passwordContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: "grey",
+      borderWidth: 1,
+      borderRadius: 4,
+      marginBottom: 16,
+    },
+    passwordInput: {
+      flex: 1,
+      color: "white",
+      padding: 12,
+      fontSize: 16,
+    },
+    eyeButton: {
+      padding: 12,
+      paddingLeft: 8,
+    },
+    eyeIcon: {
+      fontSize: 20,
+      color: 'white',
     },
     forgotPasswordContainer: {
       alignItems: 'flex-end',
