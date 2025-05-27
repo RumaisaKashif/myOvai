@@ -159,7 +159,7 @@ export default function SignUpScreen() {
             />
             <Text style={styles.label}>Password</Text>
             <TextInput
-              style={styles.input}
+              style={[styles.input, { marginBottom: 51 }]} 
               value={password}
               onChangeText={(text) => {
                 setPassword(text);
