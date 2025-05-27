@@ -84,7 +84,7 @@ export default function SignUpScreen() {
       await signOut(auth);
       
       // Automatically redirect to login page
-      router.replace('../(tabs)');
+      router.replace('/auth/login');
       
     } catch (err) {
       const errorMessage = err instanceof FirebaseError ? err.message : 'An unknown error occurred';
@@ -119,7 +119,7 @@ export default function SignUpScreen() {
         >
           <View style={styles.container}>
             <View style={styles.title}>
-              <Text style={styles.titleText}>Signup for myOvai</Text>
+              <Text style={styles.titleText}>Sign Up for myOvai</Text>
             </View>
             
             {/* Google Sign-Up Button - Prominently placed */}
