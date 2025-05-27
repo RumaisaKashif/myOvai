@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   TextInput, 
@@ -16,17 +16,11 @@ import { Link, useRouter } from 'expo-router';
 import { 
     createUserWithEmailAndPassword, 
     sendEmailVerification, 
-    signOut,
-    signInWithCredential,
-    GoogleAuthProvider 
+    signOut
 } from 'firebase/auth';
 import { FirebaseError } from 'firebase/app';
 import { auth } from '../../firebaseConfig';
-import * as Google from 'expo-auth-session/providers/google';
-import * as WebBrowser from 'expo-web-browser';
-
-// Complete the auth session
-WebBrowser.maybeCompleteAuthSession();
+import { useGoogleAuth } from '../utils/googleAuthService';
 
 export default function SignUpScreen() {
   const [email, setEmail] = useState('');
@@ -35,17 +29,22 @@ export default function SignUpScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
-  // Configure Google Auth
-  const [request, response, promptAsync] = Google.useAuthRequest({
-    iosClientId: '676509692331-fhlmlsfutai7b52ml33ffb0gjel4nc91.apps.googleusercontent.com',
-    webClientId: '676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com'
-  });
+  // Use the Google Auth hook
+  const { request, response, handleGoogleAuth, handleGoogleSignIn } = useGoogleAuth();
 
   // Handle Google Sign-In response
-  React.useEffect(() => {
+  useEffect(() => {
     if (response?.type === 'success') {
       const { authentication } = response;
-      handleGoogleSignIn(authentication);
+      setIsLoading(true);
+      setError(null);
+      
+      handleGoogleSignIn(authentication, true).then((result) => {
+        if (!result.success && result.error) {
+          setError(result.error);
+        }
+        setIsLoading(false);
+      });
     }
   }, [response]);
 
@@ -95,37 +94,15 @@ export default function SignUpScreen() {
     }
   };
 
-  const handleGoogleSignIn = async (authentication: any) => {
+  const handleGoogleSignUp = async () => {
     setIsLoading(true);
     setError(null);
     
-    try {
-      const { idToken, accessToken } = authentication;
-      const credential = GoogleAuthProvider.credential(idToken, accessToken);
-      
-      const userCredential = await signInWithCredential(auth, credential);
-      const user = userCredential.user;
-      
-      // Sign out the user after successful registration
-      await signOut(auth);
-      
-      // Automatically redirect to login page without alert
-      router.replace('/auth/login');
-      
-    } catch (err) {
-      const errorMessage = err instanceof FirebaseError ? err.message : 'Google sign-up failed';
-      setError(errorMessage);
-    } finally {
-      setIsLoading(false);
+    const result = await handleGoogleAuth(true);
+    if (!result.success && result.error) {
+      setError(result.error);
     }
-  };
-
-  const handleGoogleSignUp = async () => {
-    try {
-      await promptAsync();
-    } catch (err) {
-      setError('Failed to initiate Google sign-up');
-    }
+    setIsLoading(false);
   };
 
   return (
