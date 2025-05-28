@@ -1,18 +1,24 @@
 import { Image } from 'expo-image';
 import { Platform, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CalendarView from '../components/calendar';
+import { AuthProvider } from "../../AuthContext";
 
 
 export default function CycleLoggerScreen() {
   return (
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.titleContainer}>
-      <Text style={styles.text}>Cycle Logger</Text>
+      <SafeAreaView style={styles.calendar}>
+      <AuthProvider>
+      <CalendarView />
+      </AuthProvider>
       </SafeAreaView>
-    </SafeAreaView>
   );
 }
-
+{/* <SafeAreaView style={styles.container}> */}
+{/* <SafeAreaView style={styles.titleContainer}>
+<Text style={styles.text}>Cycle Logger</Text>
+</SafeAreaView> */}
+    {/* </SafeAreaView> */}
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -39,5 +45,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#602495",
     borderWidth: 1, 
     borderBottomColor: "white", 
+  },
+  calendar: {
+    width: "100%"
   }
 });
