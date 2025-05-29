@@ -38,9 +38,9 @@ type Cycle = {
 
 // Constants
 const PHASES = {
-    menstrual: { color: "#8B0000", name: "Menstrual" },
+    menstrual: { color: "#DC143C", name: "Menstrual" },
     follicular: { color: "#9F2B68", name: "Follicular" },
-    ovulatory: { color: "#E0115F", name: "Ovulatory" },
+    ovulatory: { color: "#FF69B4", name: "Ovulatory" },
     luteal: { color: "#C71585", name: "Luteal" },
 };
 
