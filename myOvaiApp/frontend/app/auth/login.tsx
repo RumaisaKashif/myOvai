@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   View, 
   TextInput, 
@@ -11,7 +11,7 @@ import {
   Platform,
   Alert
 } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { Link, useRouter, useFocusEffect } from 'expo-router';
 import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { FirebaseError } from '@firebase/app';
 import { auth } from '../../firebaseConfig';
@@ -30,6 +30,13 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { handleGoogleAuth } = useGoogleAuth();
+
+  // Clear error when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      setError(null);
+    }, [])
+  );
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
