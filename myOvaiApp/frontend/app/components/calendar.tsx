@@ -472,7 +472,7 @@ export default function CalendarView() {
             />
             </View>
 
-            {/* Legend Section - Fixed positioning */}
+            {/* Legend Section */}
             <View style={styles.legendContainer}>
                 {Object.entries(PHASES).map(([key, phase]) => (
                 <View key={key} style={styles.legendItem}>
@@ -572,16 +572,17 @@ export default function CalendarView() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F5F0FA", // Same as calendar background
+        paddingTop: 5,
+        paddingBottom: 5,
     },
     predictionContainer: {
-        backgroundColor: "rgba(255, 255, 255, 0.9)", // Match homepage stats card
-        borderRadius: 15,
-        marginHorizontal: 15,
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        borderRadius: 12,
+        marginHorizontal: 8,
         marginTop: 10,
-        marginBottom: 15,
-        paddingVertical: 15,
-        paddingHorizontal: 20,
+        marginBottom: 25,
+        paddingVertical: 30,
+        paddingHorizontal: 10,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -591,20 +592,20 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(45, 27, 61, 0.1)',
     },
     statsTitle: {
-        fontSize: 18,
+        fontSize: 17,
         fontWeight: 'bold',
         color: '#2D1B3D',
-        marginBottom: 8,
+        marginBottom: 6,
         fontFamily: "Helvetica",
         textAlign: "center",
     },
     predictionText: {
-        fontSize: 15,
+        fontSize: 14,
         color: '#2D1B3D',
         fontFamily: "Helvetica",
         opacity: 0.8,
         textAlign: "center",
-        marginBottom: 12,
+        marginBottom: 10,
     },
     buttonContainer: {
         flexDirection: "row",
@@ -614,9 +615,9 @@ const styles = StyleSheet.create({
     },
     logButton: {
         backgroundColor: "rgba(45, 27, 61, 0.85)",
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 20,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 18,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -633,9 +634,9 @@ const styles = StyleSheet.create({
     },
     resetButton: {
         backgroundColor: "rgba(45, 27, 61, 0.85)",
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 20,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 18,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -644,9 +645,9 @@ const styles = StyleSheet.create({
     },
     editButton: {
         backgroundColor: "rgba(45, 27, 61, 0.85)",
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 20,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 18,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -655,26 +656,29 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontSize: 14,
+        fontSize: 13,
         fontFamily: "Helvetica",
         fontWeight: '600',
     },
     calendarContainer: {
+        backgroundColor: "#f7effa",
+        paddingHorizontal: 8,
+        marginHorizontal: 8,
+        borderRadius: 8,
+        marginBottom: 25,
+        marginTop: 10,
         flex: 1,
-        backgroundColor: "#F5F0FA",
-        paddingHorizontal: 10,
-        marginBottom: 10,
     },
     legendContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
-        backgroundColor: "rgba(255, 255, 255, 0.9)", // Match other cards
-        paddingVertical: 12,
-        paddingHorizontal: 15,
-        marginHorizontal: 15,
-        marginBottom: 15,
-        borderRadius: 15,
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+        marginHorizontal: 8,
+        marginBottom: 1,
+        borderRadius: 12,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
@@ -686,15 +690,15 @@ const styles = StyleSheet.create({
     legendItem: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 6,
+        gap: 4,
     },
     legendColor: {
-        width: 14,
-        height: 14,
+        width: 12,
+        height: 12,
         borderRadius: 3,
     },
     legendText: {
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: "500",
         color: "#2D1B3D",
         fontFamily: "Helvetica",
