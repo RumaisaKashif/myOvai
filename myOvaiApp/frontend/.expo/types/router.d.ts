@@ -1,4 +1,4 @@
-// /* eslint-disable */
+/* eslint-disable */
 import * as Router from 'expo-router';
 
 export * from 'expo-router';
@@ -6,50 +6,9 @@ export * from 'expo-router';
 declare module 'expo-router' {
   export namespace ExpoRouter {
     export interface __routes<T extends string | object = string> {
-      hrefInputParams: 
-        { pathname: Router.RelativePathString, params?: Router.UnknownInputParams } |
-        { pathname: Router.ExternalPathString, params?: Router.UnknownInputParams } |
-        { pathname: `/_sitemap`; params?: Router.UnknownInputParams; } |
-        { pathname: `${'/(tabs)'}/cycle-logger` | `/cycle-logger`; params?: Router.UnknownInputParams; } |
-        { pathname: `${'/(tabs)'}` | `/`; params?: Router.UnknownInputParams; } |
-        { pathname: `${'/(tabs)'}/symptom-logger` | `/symptom-logger`; params?: Router.UnknownInputParams; } |
-        { pathname: `/auth/login`; params?: Router.UnknownInputParams; } |
-        { pathname: `/auth/signup`; params?: Router.UnknownInputParams; } |
-        { pathname: `/utils/accountCreatedScreen`; params?: Router.UnknownInputParams; } |
-        { pathname: `/utils/googleAuthService`; params?: Router.UnknownInputParams; } |
-        { pathname: `/components/CycleRing`; params?: Router.UnknownInputParams; } |
-        { pathname: `/components/calendar`; params?: Router.UnknownInputParams; };
-
-      hrefOutputParams: 
-        { pathname: Router.RelativePathString, params?: Router.UnknownOutputParams } |
-        { pathname: Router.ExternalPathString, params?: Router.UnknownOutputParams } |
-        { pathname: `/_sitemap`; params?: Router.UnknownOutputParams; } |
-        { pathname: `${'/(tabs)'}/cycle-logger` | `/cycle-logger`; params?: Router.UnknownOutputParams; } |
-        { pathname: `${'/(tabs)'}` | `/`; params?: Router.UnknownOutputParams; } |
-        { pathname: `${'/(tabs)'}/symptom-logger` | `/symptom-logger`; params?: Router.UnknownOutputParams; } |
-        { pathname: `/auth/login`; params?: Router.UnknownOutputParams; } |
-        { pathname: `/auth/signup`; params?: Router.UnknownOutputParams; } |
-        { pathname: `/utils/accountCreatedScreen`; params?: Router.UnknownOutputParams; } |
-        { pathname: `/utils/googleAuthService`; params?: Router.UnknownOutputParams; } |
-        { pathname: `/components/CycleRing`; params?: Router.UnknownOutputParams; } |
-        { pathname: `/components/calendar`; params?: Router.UnknownOutputParams; };
-
-      href: 
-        Router.RelativePathString |
-        Router.ExternalPathString |
-        `/_sitemap${`?${string}` | `#${string}` | ''}` |
-        `${'/(tabs)'}/cycle-logger${`?${string}` | `#${string}` | ''}` |
-        `/cycle-logger${`?${string}` | `#${string}` | ''}` |
-        `${'/(tabs)'}${`?${string}` | `#${string}` | ''}` |
-        `/${`?${string}` | `#${string}` | ''}` |
-        `${'/(tabs)'}/symptom-logger${`?${string}` | `#${string}` | ''}` |
-        `/symptom-logger${`?${string}` | `#${string}` | ''}` |
-        `/auth/login${`?${string}` | `#${string}` | ''}` |
-        `/auth/signup${`?${string}` | `#${string}` | ''}` |
-        `/utils/accountCreatedScreen${`?${string}` | `#${string}` | ''}` |
-        `/utils/googleAuthService${`?${string}` | `#${string}` | ''}` |
-        `/components/CycleRing${`?${string}` | `#${string}` | ''}` |
-        `/components/calendar${`?${string}` | `#${string}` | ''}`;
+      hrefInputParams: { pathname: Router.RelativePathString, params?: Router.UnknownInputParams } | { pathname: Router.ExternalPathString, params?: Router.UnknownInputParams } | { pathname: `/_sitemap`; params?: Router.UnknownInputParams; } | { pathname: `${'/(tabs)'}/cycle-logger` | `/cycle-logger`; params?: Router.UnknownInputParams; } | { pathname: `${'/(tabs)'}` | `/`; params?: Router.UnknownInputParams; } | { pathname: `${'/(tabs)'}/symptom-logger` | `/symptom-logger`; params?: Router.UnknownInputParams; } | { pathname: `/auth/login`; params?: Router.UnknownInputParams; } | { pathname: `/auth/signup`; params?: Router.UnknownInputParams; } | { pathname: `/components/calendar`; params?: Router.UnknownInputParams; } | { pathname: `/components/CycleRing`; params?: Router.UnknownInputParams; } | { pathname: `/utils/accountCreatedScreen`; params?: Router.UnknownInputParams; } | { pathname: `/utils/googleAuthService`; params?: Router.UnknownInputParams; };
+      hrefOutputParams: { pathname: Router.RelativePathString, params?: Router.UnknownOutputParams } | { pathname: Router.ExternalPathString, params?: Router.UnknownOutputParams } | { pathname: `/_sitemap`; params?: Router.UnknownOutputParams; } | { pathname: `${'/(tabs)'}/cycle-logger` | `/cycle-logger`; params?: Router.UnknownOutputParams; } | { pathname: `${'/(tabs)'}` | `/`; params?: Router.UnknownOutputParams; } | { pathname: `${'/(tabs)'}/symptom-logger` | `/symptom-logger`; params?: Router.UnknownOutputParams; } | { pathname: `/auth/login`; params?: Router.UnknownOutputParams; } | { pathname: `/auth/signup`; params?: Router.UnknownOutputParams; } | { pathname: `/components/calendar`; params?: Router.UnknownOutputParams; } | { pathname: `/components/CycleRing`; params?: Router.UnknownOutputParams; } | { pathname: `/utils/accountCreatedScreen`; params?: Router.UnknownOutputParams; } | { pathname: `/utils/googleAuthService`; params?: Router.UnknownOutputParams; };
+      href: Router.RelativePathString | Router.ExternalPathString | `/_sitemap${`?${string}` | `#${string}` | ''}` | `${'/(tabs)'}/cycle-logger${`?${string}` | `#${string}` | ''}` | `/cycle-logger${`?${string}` | `#${string}` | ''}` | `${'/(tabs)'}${`?${string}` | `#${string}` | ''}` | `/${`?${string}` | `#${string}` | ''}` | `${'/(tabs)'}/symptom-logger${`?${string}` | `#${string}` | ''}` | `/symptom-logger${`?${string}` | `#${string}` | ''}` | `/auth/login${`?${string}` | `#${string}` | ''}` | `/auth/signup${`?${string}` | `#${string}` | ''}` | `/components/calendar${`?${string}` | `#${string}` | ''}` | `/components/CycleRing${`?${string}` | `#${string}` | ''}` | `/utils/accountCreatedScreen${`?${string}` | `#${string}` | ''}` | `/utils/googleAuthService${`?${string}` | `#${string}` | ''}` | { pathname: Router.RelativePathString, params?: Router.UnknownInputParams } | { pathname: Router.ExternalPathString, params?: Router.UnknownInputParams } | { pathname: `/_sitemap`; params?: Router.UnknownInputParams; } | { pathname: `${'/(tabs)'}/cycle-logger` | `/cycle-logger`; params?: Router.UnknownInputParams; } | { pathname: `${'/(tabs)'}` | `/`; params?: Router.UnknownInputParams; } | { pathname: `${'/(tabs)'}/symptom-logger` | `/symptom-logger`; params?: Router.UnknownInputParams; } | { pathname: `/auth/login`; params?: Router.UnknownInputParams; } | { pathname: `/auth/signup`; params?: Router.UnknownInputParams; } | { pathname: `/components/calendar`; params?: Router.UnknownInputParams; } | { pathname: `/components/CycleRing`; params?: Router.UnknownInputParams; } | { pathname: `/utils/accountCreatedScreen`; params?: Router.UnknownInputParams; } | { pathname: `/utils/googleAuthService`; params?: Router.UnknownInputParams; };
     }
   }
 }
