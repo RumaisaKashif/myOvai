@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
   TextInput, 
@@ -30,11 +30,27 @@ export default function LoginScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const { handleGoogleAuth } = useGoogleAuth();
+  
+  // Track if this is the first focus to avoid clearing on initial load
+  const isFirstFocus = useRef(true);
 
-  // Clear error when screen comes into focus
+  // Clear form and error when screen comes into focus (except first time)
   useFocusEffect(
     React.useCallback(() => {
-      setError(null);
+      if (isFirstFocus.current) {
+        isFirstFocus.current = false;
+        // Only clear error on first focus, keep form data
+        setError(null);
+      } else {
+        // Clear everything when returning to the screen
+        setEmail('');
+        setPassword('');
+        setError(null);
+        setShowPassword(false);
+        setShowVerificationMessage(false);
+        setShowPasswordResetMessage(false);
+        setResetEmail('');
+      }
     }, [])
   );
 
