@@ -148,6 +148,9 @@ export default function LoginScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.confirmationContainer}>
+            <View style={styles.iconContainer}>
+              <Text style={styles.iconText}>📧</Text>
+            </View>
             <Text style={styles.confirmationTitle}>Email Verification Required</Text>
             <Text style={styles.confirmationText}>
               Please check your email and click the verification link before logging in.
@@ -173,6 +176,9 @@ export default function LoginScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
           <View style={styles.confirmationContainer}>
+            <View style={styles.iconContainer}>
+              <Text style={styles.iconText}>🔐</Text>
+            </View>
             <Text style={styles.confirmationTitle}>Password Reset Email Sent</Text>
             <Text style={styles.confirmationText}>
               We've sent a password reset link to:
@@ -195,314 +201,419 @@ export default function LoginScreen() {
   }
 
   return (
-      <SafeAreaView style={styles.safeArea}>
-        <KeyboardAvoidingView 
-          style={styles.keyboardAvoidingView}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+    <SafeAreaView style={styles.safeArea}>
+      <KeyboardAvoidingView 
+        style={styles.keyboardAvoidingView}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
+      >
+        <ScrollView 
+          contentContainerStyle={styles.scrollContainer}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <ScrollView 
-            contentContainerStyle={styles.scrollContainer}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.container}>
-              <View style={styles.title}>
-                <Text style={styles.titleText}>Login to myOvai</Text>
-              </View>
-              
-              {/* Google Sign-Up Button - Prominently placed */}
-              <View style={styles.googleButtonContainer}>
-                <TouchableOpacity 
-                  style={[styles.googleButton, isLoading && styles.disabledButton]}
-                  onPress={handleGoogleLogin}
-                  disabled={isLoading || isGoogleLoading}
-                >
+          <View style={styles.container}>
+            {/* Header */}
+            <View style={styles.header}>
+              <Text style={styles.welcomeText}>Welcome back!</Text>
+              <Text style={styles.titleText}>Login to myOvai</Text>
+            </View>
+            
+            {/* Login Form */}
+            <View style={styles.formContainer}>
+              {/* Google Sign-In Button */}
+              <TouchableOpacity 
+                style={[styles.googleButton, (isLoading || isGoogleLoading) && styles.disabledButton]}
+                onPress={handleGoogleLogin}
+                disabled={isLoading || isGoogleLoading}
+              >
+                <View style={styles.googleIconContainer}>
                   <Text style={styles.googleIcon}>G</Text>
-                  <Text style={styles.googleButtonText}>
-                    {isGoogleLoading ? 'Signing In...' : 'Sign In with Google'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+                <Text style={styles.googleButtonText}>
+                  {isGoogleLoading ? 'Signing In...' : 'Continue with Google'}
+                </Text>
+              </TouchableOpacity>
               
               {/* Divider */}
               <View style={styles.divider}>
                 <View style={styles.dividerLine} />
-                <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
+                <Text style={styles.dividerText}>or</Text>
                 <View style={styles.dividerLine} />
               </View>
               
-              {/* Email/Password Section */}
-              <Text style={styles.label}>Email</Text>
-              <TextInput
-                style={styles.input}
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text);
-                  setError(null);
-                }}
-                placeholder="Enter your email"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                editable={!isLoading && !isResetLoading}
-              />
-              <Text style={styles.label}>Password</Text>
-              <View style={styles.passwordContainer}>
+              {/* Email Input */}
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Email</Text>
                 <TextInput
-                  style={styles.passwordInput}
-                  value={password}
+                  style={styles.input}
+                  value={email}
                   onChangeText={(text) => {
-                    setPassword(text);
+                    setEmail(text);
                     setError(null);
                   }}
-                  placeholder="Enter your password"
-                  secureTextEntry={!showPassword}
+                  placeholder="Enter your email"
+                  placeholderTextColor="rgba(55, 65, 81, 0.6)"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
                   editable={!isLoading && !isResetLoading}
                 />
-                <TouchableOpacity 
-                  style={styles.eyeButton}
-                  onPress={togglePasswordVisibility}
-                  disabled={isLoading || isResetLoading}
-                >
-                  <Text style={styles.eyeIcon}>
-                    {showPassword ? '👁️' : '🛡️'}
-                  </Text>
-                </TouchableOpacity>
               </View>
               
-              {/* Forgot Password Link */}
-              <View style={styles.forgotPasswordContainer}>
-                <TouchableOpacity onPress={handleForgotPassword} disabled={isResetLoading}>
-                  <Text style={[styles.forgotPasswordText, isResetLoading && styles.disabledText]}>
-                    {isResetLoading ? 'Sending reset email...' : 'Forgot Password?'}
-                  </Text>
-                </TouchableOpacity>
+              {/* Password Input */}
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Password</Text>
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    value={password}
+                    onChangeText={(text) => {
+                      setPassword(text);
+                      setError(null);
+                    }}
+                    placeholder="Enter your password"
+                    placeholderTextColor="rgba(55, 65, 81, 0.6)"
+                    secureTextEntry={!showPassword}
+                    editable={!isLoading && !isResetLoading}
+                  />
+                  <TouchableOpacity 
+                    style={styles.eyeButton}
+                    onPress={togglePasswordVisibility}
+                    disabled={isLoading || isResetLoading}
+                  >
+                    <Text style={styles.eyeIcon}>
+                      {showPassword ? '👁️' : '🛡️'}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
               
-              {error && <Text style={styles.error}>{error}</Text>}
+              {/* Forgot Password */}
+              <TouchableOpacity 
+                style={styles.forgotPasswordContainer}
+                onPress={handleForgotPassword} 
+                disabled={isResetLoading}
+              >
+                <Text style={[styles.forgotPasswordText, isResetLoading && styles.disabledText]}>
+                  {isResetLoading ? 'Sending reset email...' : 'Forgot Password?'}
+                </Text>
+              </TouchableOpacity>
               
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity 
-                  style={[styles.emailButton, (isLoading || isResetLoading) && styles.disabledButton]} 
-                  onPress={handleLogin}
-                  disabled={isLoading || isGoogleLoading || isResetLoading}
-                >
-                  <Text style={styles.buttonText}>
-                    {isLoading ? 'Logging In...' : 'Login'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              {/* Error Message */}
+              {error && (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
+              )}
               
-              <View style={styles.linksContainer}>
-                <Text style={styles.linkText}>
+              {/* Login Button */}
+              <TouchableOpacity 
+                style={[styles.loginButton, (isLoading || isResetLoading || isGoogleLoading) && styles.disabledButton]} 
+                onPress={handleLogin}
+                disabled={isLoading || isGoogleLoading || isResetLoading}
+              >
+                <Text style={styles.loginButtonText}>
+                  {isLoading ? 'Logging In...' : 'Log In'}
+                </Text>
+              </TouchableOpacity>
+              
+              {/* Sign Up Link */}
+              <View style={styles.signupContainer}>
+                <Text style={styles.signupText}>
                   Don't have an account?{' '}
-                  <Link href="/auth/signup" style={styles.link}>
+                  <Link href="/auth/signup" style={styles.signupLink}>
                     Sign up
                   </Link>
                 </Text>
               </View>
             </View>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    safeArea: {
-      flex: 1,
-      backgroundColor: '#602495',
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#E8D5FF',
+  },
+  keyboardAvoidingView: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    minHeight: '100%',
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 40,
+    justifyContent: 'center',
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 40,
+  },
+  welcomeText: {
+    fontSize: 16,
+    color: '#8B5E83',
+    marginBottom: 8,
+    fontWeight: '500',
+  },
+  titleText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#6B46C1',
+    textAlign: 'center',
+  },
+  formContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 24,
+    padding: 28,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
     },
-    keyboardAvoidingView: {
-      flex: 1,
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  googleButton: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    scrollContainer: {
-      flexGrow: 1,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  googleIconContainer: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#4285F4',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  googleIcon: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  googleButtonText: {
+    color: '#374151',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 24,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#E5E7EB',
+  },
+  dividerText: {
+    color: '#9CA3AF',
+    marginHorizontal: 16,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  inputContainer: {
+    marginBottom: 20,
+  },
+  label: {
+    color: '#374151',
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#374151',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#374151',
+  },
+  eyeButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
+  eyeIcon: {
+    fontSize: 18,
+    color: '#9CA3AF',
+  },
+  forgotPasswordContainer: {
+    alignItems: 'flex-end',
+    marginBottom: 24,
+  },
+  forgotPasswordText: {
+    color: '#8B5E83',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  disabledText: {
+    opacity: 0.6,
+  },
+  errorContainer: {
+    backgroundColor: '#FEF2F2',
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 20,
+  },
+  errorText: {
+    color: '#DC2626',
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  loginButton: {
+    backgroundColor: '#8B5E83',
+    paddingVertical: 18,
+    borderRadius: 16,
+    alignItems: 'center',
+    marginBottom: 24,
+    shadowColor: '#8B5E83',
+    shadowOffset: {
+      width: 0,
+      height: 4,
     },
-    container: {
-      flex: 1,
-      padding: 16,
-      justifyContent: 'center',
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  disabledButton: {
+    opacity: 0.6,
+  },
+  loginButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  signupContainer: {
+    alignItems: 'center',
+  },
+  signupText: {
+    color: '#6B7280',
+    fontSize: 14,
+  },
+  signupLink: {
+    color: '#8B5E83',
+    fontWeight: '600',
+  },
+  // Confirmation screen styles
+  confirmationContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    padding: 32,
+    borderRadius: 24,
+    alignItems: 'center',
+    marginHorizontal: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
     },
-    title: { 
-      marginBottom: 50,
-      alignItems: 'center'
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    backgroundColor: '#E8D5FF',
+    borderRadius: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  iconText: {
+    fontSize: 32,
+  },
+  confirmationTitle: {
+    color: '#374151',
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  confirmationText: {
+    color: '#6B7280',
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 12,
+    lineHeight: 22,
+  },
+  confirmationSubtext: {
+    color: '#9CA3AF',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 32,
+    lineHeight: 20,
+  },
+  emailText: {
+    color: '#8B5E83',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  confirmationButton: {
+    backgroundColor: '#8B5E83',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    minWidth: 150,
+    shadowColor: '#8B5E83',
+    shadowOffset: {
+      width: 0,
+      height: 4,
     },
-    titleText: { 
-      color: "white",
-      fontSize: 30,
-      textAlign: "center",
-    },
-    googleButtonContainer: {
-      marginBottom: 30,
-      paddingHorizontal: 20,
-    },
-    googleIcon: {
-      fontSize: 18,
-      fontWeight: 'bold',
-      color: '#4285f4',
-    },
-    label: {
-      color: "white",
-      fontSize: 16,
-      marginBottom: 8,
-    },
-    input: {
-      backgroundColor: "grey",
-      color: "white",
-      borderWidth: 1,
-      padding: 12,
-      marginBottom: 16,
-      borderRadius: 4,
-      fontSize: 16,
-    },
-    passwordContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: "grey",
-      borderWidth: 1,
-      borderRadius: 4,
-      marginBottom: 16,
-    },
-    passwordInput: {
-      flex: 1,
-      color: "white",
-      padding: 12,
-      fontSize: 16,
-    },
-    eyeButton: {
-      padding: 12,
-      paddingLeft: 8,
-    },
-    eyeIcon: {
-      fontSize: 20,
-      color: 'white',
-    },
-    forgotPasswordContainer: {
-      alignItems: 'flex-end',
-      marginBottom: 16,
-    },
-    forgotPasswordText: {
-      color: '#ADD8E6',
-      fontSize: 14,
-      textDecorationLine: 'underline',
-    },
-    disabledText: {
-      opacity: 0.6,
-    },
-    error: {
-      color: 'red',
-      marginBottom: 16,
-      textAlign: 'center',
-    },
-    buttonContainer: {
-      marginVertical: 8,
-    },
-    emailButton: {
-      backgroundColor: '#4A90E2',
-      padding: 12,
-      borderRadius: 8,
-      alignItems: 'center',
-    },
-    googleButton: {
-      backgroundColor: 'white',
-      padding: 12,
-      borderRadius: 6,
-      alignItems: 'center',
-      flexDirection: 'row',
-      justifyContent: 'center',
-      borderWidth: 1,
-      borderColor: '#dadce0',
-      elevation: 1,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.1,
-      shadowRadius: 2,
-    },
-    disabledButton: {
-      opacity: 0.6,
-    },
-    buttonText: {
-      color: 'white',
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    googleButtonText: {
-      color: '#3c4043',
-      fontSize: 16,
-      fontWeight: '500',
-      marginLeft: 8,
-    },
-    divider: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 20,
-    },
-    dividerLine: {
-      flex: 1,
-      height: 1,
-      backgroundColor: 'white',
-      opacity: 0.5,
-    },
-    dividerText: {
-      color: 'white',
-      marginHorizontal: 10,
-      fontSize: 14,
-    },
-    linksContainer: {
-      marginTop: 16,
-      alignItems: 'center',
-    },
-    linkText: {
-      color: "white",
-      fontSize: 14,
-      marginVertical: 4,
-    },
-    link: {
-      color: 'blue',
-      textDecorationLine: 'underline',
-    },
-    // Confirmation screen styles
-    confirmationContainer: {
-      backgroundColor: 'rgba(255, 255, 255, 0.1)',
-      padding: 24,
-      borderRadius: 12,
-      alignItems: 'center',
-      marginHorizontal: 16,
-    },
-    confirmationTitle: {
-      color: 'white',
-      fontSize: 24,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: 16,
-    },
-    confirmationText: {
-      color: 'white',
-      fontSize: 16,
-      textAlign: 'center',
-      marginBottom: 12,
-      lineHeight: 22,
-    },
-    confirmationSubtext: {
-      color: 'rgba(255, 255, 255, 0.8)',
-      fontSize: 14,
-      textAlign: 'center',
-      marginBottom: 24,
-      lineHeight: 20,
-    },
-    emailText: {
-      color: '#ADD8E6',
-      fontSize: 16,
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: 16,
-    },
-    confirmationButton: {
-      backgroundColor: '#4A90E2',
-      padding: 12,
-      borderRadius: 8,
-      alignItems: 'center',
-      minWidth: 150,
-    },
-  });
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
