@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 25,
     alignItems: "center",
-    backgroundColor: "rgba(45, 27, 61, 0.85)", // Same as homepage
+    backgroundColor: "rgba(45, 27, 61, 0.85)", 
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
     shadowColor: "#000",
