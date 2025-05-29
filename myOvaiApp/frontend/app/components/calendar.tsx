@@ -424,7 +424,7 @@ export default function CalendarView() {
         <SafeAreaView style={styles.container}>
             {/* Compact Overview Section */}
             <View style={styles.predictionContainer}>
-                <Text style={styles.statsTitle}>Your Cycle Overview</Text>
+                <Text style={styles.statsTitle}>Cycle Overview</Text>
                 <Text style={styles.predictionText}>
                      {nextPeriodDays !== null
                     ? `Your next period starts in ${nextPeriodDays} days`
@@ -442,12 +442,13 @@ export default function CalendarView() {
                             {isLoggingMode ? "Log Dates" : "Log Dates"}
                         </Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-                    <Text style={styles.buttonText}>Reset Cycles</Text>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styles.editButton} onPress={openModal}>
                         <Text style={styles.buttonText}>Edit Cycle</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+                    <Text style={styles.buttonText}>Reset Cycles</Text>
+                    </TouchableOpacity>
+                    
                 </View>
             </View>
 
@@ -574,13 +575,14 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 5,
         paddingBottom: 5,
+        marginBottom: 20,
     },
     predictionContainer: {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         borderRadius: 12,
         marginHorizontal: 8,
         marginTop: 10,
-        marginBottom: 25,
+        marginBottom: 20,
         paddingVertical: 30,
         paddingHorizontal: 10,
         shadowColor: "#000",
@@ -592,29 +594,29 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(45, 27, 61, 0.1)',
     },
     statsTitle: {
-        fontSize: 17,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#2D1B3D',
-        marginBottom: 6,
+        marginBottom: 8,
         fontFamily: "Helvetica",
         textAlign: "center",
     },
     predictionText: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#2D1B3D',
         fontFamily: "Helvetica",
         opacity: 0.8,
         textAlign: "center",
-        marginBottom: 10,
+        marginBottom: 15,
     },
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "center",
-        gap: 10,
+        gap: 15,
         flexWrap: "wrap",
     },
     logButton: {
-        backgroundColor: "rgba(45, 27, 61, 0.85)",
+        backgroundColor: "#583C8A",
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 18,
@@ -644,7 +646,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     editButton: {
-        backgroundColor: "rgba(45, 27, 61, 0.85)",
+        backgroundColor: "#770737",
         paddingVertical: 6,
         paddingHorizontal: 12,
         borderRadius: 18,
@@ -656,7 +658,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color: 'white',
-        fontSize: 13,
+        fontSize: 15,
         fontFamily: "Helvetica",
         fontWeight: '600',
     },
@@ -665,8 +667,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         marginHorizontal: 8,
         borderRadius: 8,
-        marginBottom: 25,
-        marginTop: 10,
+        marginBottom: 22,
         flex: 1,
     },
     legendContainer: {
@@ -677,7 +678,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 10,
         marginHorizontal: 8,
-        marginBottom: 1,
+        marginBottom: 6,
         borderRadius: 12,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
@@ -698,7 +699,7 @@ const styles = StyleSheet.create({
         borderRadius: 3,
     },
     legendText: {
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: "500",
         color: "#2D1B3D",
         fontFamily: "Helvetica",
@@ -735,7 +736,7 @@ const styles = StyleSheet.create({
         borderColor: "#ccc",
     },
     cycleSelectorButtonSelected: {
-        backgroundColor: "#8B0000",
+        backgroundColor: "#770737",
         borderColor: "#8B0000",
     },
     cycleSelectorText: {
@@ -752,7 +753,7 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         fontSize: 16,
         marginBottom: 6,
-        color: "#8B0000",
+        color: "#770737",
     },
     phaseDatesRow: {
         flexDirection: "row",
