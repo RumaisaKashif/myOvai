@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   View, 
   TextInput, 
@@ -37,10 +37,25 @@ export default function SignUpScreen() {
   // Use the Google Auth hook
   const { request, response, handleGoogleAuth, handleGoogleSignIn } = useGoogleAuth();
 
-  // Clear error when screen comes into focus
+  // Track if this is the first focus to avoid clearing on initial load
+  const isFirstFocus = useRef(true);
+  
+  // Clear form and error when screen comes into focus (except first time)
   useFocusEffect(
     React.useCallback(() => {
-      setError(null);
+      if (isFirstFocus.current) {
+        isFirstFocus.current = false;
+        // Only clear error on first focus, keep form data
+        setError(null);
+      } else {
+        // Clear everything when returning to the screen
+        setEmail('');
+        setPassword('');
+        setError(null);
+        setShowPassword(false);
+        setCreatedEmail('');
+        setShowSuccessPopup(false);
+      }
     }, [])
   );
 
