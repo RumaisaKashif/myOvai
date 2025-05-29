@@ -38,10 +38,10 @@ type Cycle = {
 
 // Constants
 const PHASES = {
-    menstrual: { color: "#DE3163", name: "Menstrual" }, // Pink
-    follicular: { color: "#ffbdbd", name: "Follicular" }, // Dark Red 
-    ovulatory: { color: "#AA336A", name: "Ovulatory" }, // Green
-    luteal: { color: "#ffbde4", name: "Luteal" }, // Purple
+    menstrual: { color: "#DC143C", name: "Menstrual" },
+    follicular: { color: "#9F2B68", name: "Follicular" },
+    ovulatory: { color: "#FF69B4", name: "Ovulatory" },
+    luteal: { color: "#C71585", name: "Luteal" },
 };
 
 const AVERAGE_CYCLE_LENGTH = 28;
