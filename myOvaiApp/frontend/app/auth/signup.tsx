@@ -12,7 +12,7 @@ import {
   ScrollView,
   Platform
 } from 'react-native';
-import { Link, useRouter } from 'expo-router';
+import { Link, useRouter, useFocusEffect } from 'expo-router';
 import { 
     createUserWithEmailAndPassword, 
     sendEmailVerification, 
@@ -36,6 +36,13 @@ export default function SignUpScreen() {
 
   // Use the Google Auth hook
   const { request, response, handleGoogleAuth, handleGoogleSignIn } = useGoogleAuth();
+
+  // Clear error when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      setError(null);
+    }, [])
+  );
 
   // Handle Google Sign-In response
   useEffect(() => {
