@@ -320,11 +320,20 @@ export default function CalendarView() {
         });
     };
 
-    // Switch logging mode
-    const changeLoggingMode = () => {
-        setIsLoggingMode(true);
-        setSelectingPhase("start");
-        setTempSelectedDate(null);
+    // Toggle logging mode
+    const toggleLoggingMode = () => {
+        if (isLoggingMode) {
+            // Exit logging mode
+            setIsLoggingMode(false);
+            setSelectingPhase(null);
+            setTempSelectedDate(null);
+            setCurrentCycleId(null);
+        } else {
+            // Enter logging mode
+            setIsLoggingMode(true);
+            setSelectingPhase("start");
+            setTempSelectedDate(null);
+        }
     };
 
     // Reset all cycles
@@ -422,8 +431,16 @@ export default function CalendarView() {
                 : "Select your cycle dates"}
             </Text>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.logButton} onPress={changeLoggingMode}>
-                <Text style={styles.buttonText}>Log Dates</Text>
+                <TouchableOpacity 
+                    style={[
+                        styles.logButton, 
+                        isLoggingMode && styles.logButtonActive
+                    ]} 
+                    onPress={toggleLoggingMode}
+                >
+                    <Text style={styles.buttonText}>
+                        {isLoggingMode ? "Log Dates" : "Log Dates"}
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
                 <Text style={styles.buttonText}>Reset Cycles</Text>
@@ -596,6 +613,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 25,
     },
+    logButtonActive: {
+        backgroundColor: "#9279BA",
+        shadowColor: "#9279BA",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 6,
+    },
     resetButton: {
         backgroundColor: "#9F2B68",
         paddingVertical: 10,
@@ -616,7 +641,7 @@ const styles = StyleSheet.create({
         fontFamily: "Helvetica",
     },
     button: {
-        backgroundColor: "#8B0000",
+        backgroundColor: "#9279BA",
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 8,
