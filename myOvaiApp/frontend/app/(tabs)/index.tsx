@@ -35,7 +35,7 @@ export default function HomeScreen() {
     // show a loading or empty view while redirecting
     return (
       <LinearGradient
-        colors={['#E0BBE4', '#C8A2C8', '#BFACC8']}
+        colors={['#E6D7FF', '#D8C7F0', '#E0BBE4']}
         style={styles.fullScreen}
       />
     );
@@ -43,7 +43,7 @@ export default function HomeScreen() {
 
   return (
     <LinearGradient
-      colors={['#E0BBE4', '#C8A2C8', '#BFACC8']}
+      colors={['#E6D7FF', '#D8C7F0', '#E0BBE4']}
       style={styles.container}
     >
       <SafeAreaView style={styles.safeArea}>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 25,
     alignItems: "center",
-    backgroundColor: "rgba(96, 36, 149, 0.9)", // Semi-transparent dark purple
+    backgroundColor: "rgba(45, 27, 61, 0.85)", // Darker purple with transparency to match the nav
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
     shadowColor: "#000",
@@ -143,23 +143,23 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     borderWidth: 1,
-    borderColor: 'rgba(96, 36, 149, 0.1)',
+    borderColor: 'rgba(45, 27, 61, 0.1)',
   },
   statsTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#602495',
+    color: '#2D1B3D',
     marginBottom: 10,
     fontFamily: "Helvetica",
   },
   statsText: {
     fontSize: 16,
-    color: '#602495',
+    color: '#2D1B3D',
     fontFamily: "Helvetica",
     opacity: 0.8,
   },
   logoutButton: {
-    backgroundColor: "#602495",
+    backgroundColor: "rgba(45, 27, 61, 0.85)",
     borderRadius: 25,
     marginBottom: 30,
     width: '40%',
