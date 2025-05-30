@@ -1,52 +1,67 @@
 import { Image } from 'expo-image';
-import { Platform, StyleSheet, Text } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { LinearGradient } from 'expo-linear-gradient';
 import CalendarView from '../components/calendar';
 import { AuthProvider } from "../../AuthContext";
 
-
 export default function CycleLoggerScreen() {
   return (
-      <SafeAreaView style={styles.calendar}>
-      <AuthProvider>
-      <CalendarView />
-      </AuthProvider>
+    <LinearGradient
+      colors={['#E6D7FF', '#D8C7F0', '#E0BBE4']}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.titleContainer}>
+          <Text style={styles.pageTitle}>Cycle Logger</Text>
+        </View>
+        
+        <View style={styles.contentContainer}>
+          <AuthProvider>
+            <CalendarView />
+          </AuthProvider>
+        </View>
       </SafeAreaView>
+    </LinearGradient>
   );
 }
-{/* <SafeAreaView style={styles.container}> */}
-{/* <SafeAreaView style={styles.titleContainer}>
-<Text style={styles.text}>Cycle Logger</Text>
-</SafeAreaView> */}
-    {/* </SafeAreaView> */}
+
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center',
-      gap: 8,
-      backgroundColor: "#9169BF",
+  container: {
+    flex: 1,
   },
-  text: {
-    marginTop: 40,
-    alignItems: 'center',//horizontally centre
-    justifyContent: 'center',//vertically centre
-    color: 'white',
-    fontSize: 30,
-    fontWeight: "bold",
-    fontFamily: "Helvetica",
+  safeArea: {
+    flex: 1,
+    alignItems: 'center',
   },
   titleContainer: {
-    position: 'absolute',
     width: '100%',
-    paddingLeft: 30,
-    paddingRight: 30,
+    paddingHorizontal: 30,
+    paddingVertical: 25,
     alignItems: "center",
-    padding: 10, 
-    backgroundColor: "#602495",
-    borderWidth: 1, 
-    borderBottomColor: "white", 
+    backgroundColor: "rgba(45, 27, 61, 0.85)", 
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  calendar: {
-    width: "100%"
-  }
+  pageTitle: {
+    color: 'white',
+    fontSize: 28,
+    fontWeight: "bold",
+    fontFamily: "Helvetica",
+    textAlign: 'center',
+  },
+  contentContainer: {
+    flex: 1,
+    width: '100%',
+    paddingHorizontal: 10,
+    paddingTop: 20,
+  },
 });
