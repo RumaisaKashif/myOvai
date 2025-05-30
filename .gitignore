@@ -12,3 +12,6 @@ myovai-375225041c12.json
 
 expo-env.d.ts
 # @end expo-cli
+
+# ignore google-services.json file
+myOvaiApp/frontend/google-services.json
