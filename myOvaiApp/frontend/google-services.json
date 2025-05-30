@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "676509692331",
+    "project_id": "myovai",
+    "storage_bucket": "myovai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:676509692331:android:68700e2b79168b693aa2ee",
+        "android_client_info": {
+          "package_name": "com.pallas.myOvai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgUzseQdgQOdFbtg-avPMqZ8xAdiPTyk4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "676509692331-fhlmlsfutai7b52ml33ffb0gjel4nc91.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.pallas.myOvai"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
