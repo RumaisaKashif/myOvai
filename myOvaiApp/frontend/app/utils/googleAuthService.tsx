@@ -18,7 +18,8 @@ export const useGoogleAuth = () => {
     // iosClientId: '676509692331-fhlmlsfutai7b52ml33ffb0gjel4nc91.apps.googleusercontent.com', // use for actual IOS deployment
     iosClientId: '676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com', // temporarily equate to webid for expo go compatibility
     webClientId: '676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com',
-    androidClientId: undefined, // Skip android for now
+    androidClientId: '676509692331-3u9rd26trdaffg1omjilt5klv52b9q6a.apps.googleusercontent.com',
+    // androidClientId: undefined, // Skip android for now
     redirectUri: Platform.OS !== 'web' ? 'https://auth.expo.io/@rumaisakashif/myOvaiApp' : undefined, // Your username
     scopes: ['profile', 'email'],
   });
