@@ -38,9 +38,9 @@ type Cycle = {
 
 // Constants
 const PHASES = {
-    menstrual: { color: "#8B0000", name: "Menstrual" },
+    menstrual: { color: "#DC143C", name: "Menstrual" },
     follicular: { color: "#9F2B68", name: "Follicular" },
-    ovulatory: { color: "#E0115F", name: "Ovulatory" },
+    ovulatory: { color: "#FF69B4", name: "Ovulatory" },
     luteal: { color: "#C71585", name: "Luteal" },
 };
 
@@ -422,65 +422,66 @@ export default function CalendarView() {
 
     return (
         <SafeAreaView style={styles.container}>
-            {/* Prediction Section */}
-        <View style={[styles.predictionContainer, { height: height / 3 }]}>
-            <Text style={styles.greetingText}>Hi, {userName}!</Text>
-            <Text style={styles.predictionText}>
-                 {nextPeriodDays !== null
-                ? `Your next period starts in ${nextPeriodDays} days`
-                : "Select your cycle dates"}
-            </Text>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity 
-                    style={[
-                        styles.logButton, 
-                        isLoggingMode && styles.logButtonActive
-                    ]} 
-                    onPress={toggleLoggingMode}
-                >
-                    <Text style={styles.buttonText}>
-                        {isLoggingMode ? "Log Dates" : "Log Dates"}
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-                <Text style={styles.buttonText}>Reset Cycles</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.editButton} onPress={openModal}>
-                    <Text style={styles.buttonText}>Edit Cycle</Text>
-                </TouchableOpacity>
+            {/* Compact Overview Section */}
+            <View style={styles.predictionContainer}>
+                <Text style={styles.statsTitle}>Cycle Overview</Text>
+                <Text style={styles.predictionText}>
+                     {nextPeriodDays !== null
+                    ? `Your next period starts in ${nextPeriodDays} days`
+                    : "Select your cycle dates"}
+                </Text>
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity 
+                        style={[
+                            styles.logButton, 
+                            isLoggingMode && styles.logButtonActive
+                        ]} 
+                        onPress={toggleLoggingMode}
+                    >
+                        <Text style={styles.buttonText}>
+                            {isLoggingMode ? "Log Dates" : "Log Dates"}
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.editButton} onPress={openModal}>
+                        <Text style={styles.buttonText}>Edit Cycle</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
+                    <Text style={styles.buttonText}>Reset Cycles</Text>
+                    </TouchableOpacity>
+                    
+                </View>
             </View>
-        </View>
 
-        {/* Calendar Section */}
-        <View style={[styles.calendarContainer, { height: (1.5 / 3) * height }]}> {/* Adjusted for legend bar */}
-        <Calendar
-        style={{ width: "100%" }}
-        onDayPress={onDayPress}
-        markedDates={showMarkedDates()}
-        markingType={"custom"}
-        theme={{
-            backgroundColor: "#F5F0FA",
-            calendarBackground: "#F5F0FA",
-            textSectionTitleColor: "#2E1B4A",
-            todayTextColor: "#9F2B68",
-            arrowColor: "#602495",
-            monthTextColor: "#2E1B4A",
-            textDayFontFamily: "Helvetica",
-            textMonthFontFamily: "Helvetica",
-            textDayHeaderFontFamily: "Helvetica",
-        }}
-        />
-        </View>
-
-        {/* Legend Bar */}
-        <View style={[styles.legendContainer, {height: 0.35 / 3 * height}]}>
-            {Object.entries(PHASES).map(([key, phase]) => (
-            <View key={key} style={styles.legendItem}>
-                <View style={[styles.legendColor, { backgroundColor: phase.color }]} />
-                <Text style={styles.legendText}>{phase.name}</Text>
+            {/* Calendar Section */}
+            <View style={styles.calendarContainer}>
+            <Calendar
+            style={{ width: "100%" }}
+            onDayPress={onDayPress}
+            markedDates={showMarkedDates()}
+            markingType={"custom"}
+            theme={{
+                backgroundColor: "#F5F0FA",
+                calendarBackground: "#F5F0FA",
+                textSectionTitleColor: "#2E1B4A",
+                todayTextColor: "#9F2B68",
+                arrowColor: "#602495",
+                monthTextColor: "#2E1B4A",
+                textDayFontFamily: "Helvetica",
+                textMonthFontFamily: "Helvetica",
+                textDayHeaderFontFamily: "Helvetica",
+            }}
+            />
             </View>
-            ))}
-        </View>
+
+            {/* Legend Section */}
+            <View style={styles.legendContainer}>
+                {Object.entries(PHASES).map(([key, phase]) => (
+                <View key={key} style={styles.legendItem}>
+                    <View style={[styles.legendColor, { backgroundColor: phase.color }]} />
+                    <Text style={styles.legendText}>{phase.name}</Text>
+                </View>
+                ))}
+            </View>
 
             {/* Modal for Editing */}
             <Modal
@@ -572,33 +573,39 @@ export default function CalendarView() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#F5F0FA",
+        paddingTop: 5,
+        paddingBottom: 5,
+        marginBottom: 20,
     },
     predictionContainer: {
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#E6D9F5",
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        elevation: 5,
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        borderRadius: 12,
+        marginHorizontal: 8,
+        marginTop: 10,
+        marginBottom: 20,
+        paddingVertical: 30,
+        paddingHorizontal: 10,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: 'rgba(45, 27, 61, 0.1)',
     },
-    greetingText: {
+    statsTitle: {
         fontSize: 20,
-        fontWeight: "500",
-        color: "#2E1B4A",
+        fontWeight: 'bold',
+        color: '#2D1B3D',
+        marginBottom: 8,
         fontFamily: "Helvetica",
         textAlign: "center",
-        marginBottom: 10,
     },
     predictionText: {
-        fontSize: 24,
-        fontWeight: "600",
-        color: "#2E1B4A",
+        fontSize: 16,
+        color: '#2D1B3D',
         fontFamily: "Helvetica",
+        opacity: 0.8,
         textAlign: "center",
         marginBottom: 15,
     },
@@ -606,12 +613,18 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         gap: 15,
+        flexWrap: "wrap",
     },
     logButton: {
-        backgroundColor: "#602495",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 25,
+        backgroundColor: "#583C8A",
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 18,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     logButtonActive: {
         backgroundColor: "#9279BA",
@@ -622,67 +635,73 @@ const styles = StyleSheet.create({
         elevation: 6,
     },
     resetButton: {
-        backgroundColor: "#9F2B68",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 25,
+        backgroundColor: "rgba(45, 27, 61, 0.85)",
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 18,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     editButton: {
         backgroundColor: "#770737",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 25,
-        marginHorizontal: 10,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        borderRadius: 18,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     buttonText: {
-        color: "white",
-        fontSize: 16,
-        fontWeight: "600",
+        color: 'white',
+        fontSize: 15,
         fontFamily: "Helvetica",
-    },
-    button: {
-        backgroundColor: "#9279BA",
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        borderRadius: 8,
-        elevation: 3,
-        minWidth: 90,
-        alignItems: "center",
+        fontWeight: '600',
     },
     calendarContainer: {
-        width: "100%",
-        backgroundColor: "#F5F0FA",
+        backgroundColor: "#f7effa",
+        paddingHorizontal: 8,
+        marginHorizontal: 8,
+        borderRadius: 8,
+        marginBottom: 22,
+        flex: 1,
     },
     legendContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
-        backgroundColor: "#E6D9F5",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        elevation: 5,
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+        marginHorizontal: 8,
+        marginBottom: 6,
+        borderRadius: 12,
         shadowColor: "#000",
-        shadowOffset: { width: 0, height: -2 },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-        height: 60,
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: 'rgba(45, 27, 61, 0.1)',
     },
     legendItem: {
         flexDirection: "row",
         alignItems: "center",
-        gap: 8,
+        gap: 4,
     },
     legendColor: {
-        width: 16,
-        height: 16,
-        borderRadius: 4,
+        width: 12,
+        height: 12,
+        borderRadius: 3,
     },
     legendText: {
-        fontSize: 14,
+        fontSize: 12,
         fontWeight: "500",
-        color: "#2E1B4A",
+        color: "#2D1B3D",
         fontFamily: "Helvetica",
     },
     modalBackground: {
@@ -717,7 +736,7 @@ const styles = StyleSheet.create({
         borderColor: "#ccc",
     },
     cycleSelectorButtonSelected: {
-        backgroundColor: "#8B0000",
+        backgroundColor: "#770737",
         borderColor: "#8B0000",
     },
     cycleSelectorText: {
@@ -734,7 +753,7 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         fontSize: 16,
         marginBottom: 6,
-        color: "#8B0000",
+        color: "#770737",
     },
     phaseDatesRow: {
         flexDirection: "row",
