@@ -423,6 +423,7 @@ export default function CalendarView() {
     return (
         <SafeAreaView style={styles.container}>
             {/* Compact Overview Section */}
+            <ScrollView>
             <View style={styles.predictionContainer}>
                 <Text style={styles.statsTitle}>Cycle Overview</Text>
                 <Text style={styles.predictionText}>
@@ -566,6 +567,7 @@ export default function CalendarView() {
                     </View>
                 </View>
             </Modal>
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -575,7 +577,6 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingTop: 5,
         paddingBottom: 5,
-        marginBottom: 20,
     },
     predictionContainer: {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -612,7 +613,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
         flexDirection: "row",
         justifyContent: "center",
-        gap: 15,
+        gap: 10,
         flexWrap: "wrap",
     },
     logButton: {
@@ -662,13 +663,27 @@ const styles = StyleSheet.create({
         fontFamily: "Helvetica",
         fontWeight: '600',
     },
+    // calendarContainer: {
+    //     backgroundColor: "#f7effa",
+    //     paddingHorizontal: 8,
+    //     marginHorizontal: 8,
+    //     borderRadius: 8,
+    //     marginBottom: 22,
+    //     flex: 1,
+    // },
     calendarContainer: {
-        backgroundColor: "#f7effa",
-        paddingHorizontal: 8,
+        backgroundColor: "#F5F0FA",
         marginHorizontal: 8,
-        borderRadius: 8,
-        marginBottom: 22,
-        flex: 1,
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3.84,
+        elevation: 5,
+        borderWidth: 1,
+        borderColor: 'rgba(45, 27, 61, 0.1)',
+        marginBottom: 20,
+        overflow: 'hidden', // Ensure calendar doesn't overflow container
     },
     legendContainer: {
         flexDirection: "row",
