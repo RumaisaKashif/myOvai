@@ -25,7 +25,7 @@ export default function SymptomLoggerScreen() {
           <Text style={styles.subtitleText}>Track how you're feeling today</Text>
         </View>
         
-        <ScrollView style={styles.contentContainer} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.contentContainer}>
           <View style={styles.symptomsGrid}>
             {symptoms.map((symptom, index) => (
               <TouchableOpacity key={index} style={styles.symptomCard}>

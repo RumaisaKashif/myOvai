@@ -3,9 +3,11 @@ import React from 'react';
 import { Ionicons } from "@expo/vector-icons";
 import { Platform } from 'react-native';
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs 
@@ -15,9 +17,9 @@ export default function TabLayout() {
           backgroundColor: '#2D1B3D', // Dark purple background
           borderTopColor: '#6B46C1', // Purple border
           borderTopWidth: 1,
-          paddingBottom: Platform.OS === 'ios' ? 20 : 10,
+          paddingBottom: Platform.OS === 'ios' ? 20 + insets.bottom : 10 + insets.bottom,
           paddingTop: 10,
-          height: Platform.OS === 'ios' ? 90 : 60,
+          height: Platform.OS === 'ios' ? 60 + insets.bottom : 60 + insets.bottom,
         },
         tabBarActiveTintColor: '#E879F9', // Bright purple for active tabs
         tabBarInactiveTintColor: '#A78BFA', // Lighter purple for inactive tabs

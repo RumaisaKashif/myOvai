@@ -55,7 +55,7 @@ export default function HomeScreen() {
         </View>
         
         <View style={styles.contentContainer}>
-          {/* Add quick stats or cycle info here if needed */}
+          {/* Add cycle info */}
           <View style={styles.statsCard}>
             <Text style={styles.statsTitle}>Your Cycle Overview</Text>
             <Text style={styles.statsText}>Next period starts in 1 day</Text>

@@ -37,18 +37,18 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        {!user ? (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        ) : (
-          <>
-            <Stack.Screen name="auth/login" />
-            <Stack.Screen name="auth/signup" />
-          </>
-        )}
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          {!user ? (
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          ) : (
+            <>
+              <Stack.Screen name="auth/login" />
+              <Stack.Screen name="auth/signup" />
+            </>
+          )}
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
   );
 }
