@@ -98,16 +98,16 @@ export default function CalendarView() {
                     setCycles(namedCycleData);
                     updateNextPeriodDays(namedCycleData);
                 } else {
-                    console.log("No user document found.");
+                    console.log("No user doc found.");
                     await setDoc(userDoc, { cycles: [] }, { merge: true });
                     setCycles([]);
                 }
             } catch (error) {
-                console.error("Error retrieving cycle data:", error);
+                console.error("Error retrieving cycle:", error);
                 if (error instanceof Error) {
-                    alert(`Failed to retrieve cycle data: ${error.message}`);
+                    alert(`Failed to retrieve cycle: ${error.message}`);
                 } else {
-                    alert('Failed to retrieve cycle data: Unknown error occurred');
+                    alert('Failed to retrieve cycle: Unknown error occurred');
                 }
                 setCycles([]);
             } finally {
@@ -117,24 +117,24 @@ export default function CalendarView() {
         retrieveData();
     }, [user]);
 
-    // Save to Firebase
+    // Save to Firebase Firestore
     const saveToFirebase = async (newCycle: Cycle[]): Promise<boolean> => {
         if (!user || !user.uid) {
             console.error("No authenticated user found.");
-            alert("Please sign in to save cycle data.");
+            alert("Please sign in to save your cycle.");
             return false;
         }
         try {
             const userDoc = doc(db, "users", user.uid);
             await setDoc(userDoc, { cycles: newCycle }, { merge: true });
-            console.log("Data saved successfully to Firestore for user:", user.uid);
+            console.log("Data saved to Firestore for user:", user.uid);
             return true;
         } catch (error) {
-            console.error("Error saving cycle data:", error);
+            console.error("Error saving cycle:", error);
             if (error instanceof Error) {
-                alert(`Failed to save cycle data: ${error.message}`);
+                alert(`Failed to save cycle: ${error.message}`);
             } else {
-                alert('Failed to save cycle data: Unknown error occurred');
+                alert('Failed to save cycle: Unknown error occurred');
             }
             return false;
         }
@@ -176,6 +176,8 @@ export default function CalendarView() {
     const calculatePhases = (menstrualPhaseStart: string, menstrualPhaseEnd: string): 
     CyclePhase[] => {
         const startDate = moment(menstrualPhaseStart);
+
+        // Initialise with menstrual phase data
         const cyclePhasesArray: CyclePhase[] = [
         { start: menstrualPhaseStart, end: menstrualPhaseEnd, 
             color: PHASES.menstrual.color, name: PHASES.menstrual.name },
@@ -211,8 +213,8 @@ export default function CalendarView() {
         return cyclePhasesArray;
     };
 
-    // Build marked dates for calendar
-    const showMarkedDates = (): Record<string, Marking> => {
+    // Display colored dates for calendar
+    const showColoredDates = (): Record<string, Marking> => {
         const markings: Record<string, Marking> = {};
 
         if (tempSelectedDate && isLoggingMode) {
@@ -234,34 +236,34 @@ export default function CalendarView() {
         cycles.forEach((cycle) => {
             cycle.phases.forEach((phase) => {
                 if (phase.start && phase.end) {
-                let currentDate = moment(phase.start);
-                const endDate = moment(phase.end);
-                while (currentDate <= endDate) {
-                    const dateString = currentDate.format("YYYY-MM-DD");
-                    if (!markings[dateString] || (tempSelectedDate !== dateString)) {
-                    markings[dateString] = {
-                        customStyles: {
-                        container: {
-                            backgroundColor: phase.color,
-                            borderRadius: 20,
-                            elevation: 4,
-                        },
-                        text: {
-                            color: "white",
-                            fontWeight: "600",
-                        },
-                        },
-                    };
+                    let currDate = moment(phase.start);
+                    const endDate = moment(phase.end);
+                    while (currDate <= endDate) {
+                        const dateString = currDate.format("YYYY-MM-DD");
+                        if (!markings[dateString] || (tempSelectedDate !== dateString)) {
+                        markings[dateString] = {
+                            customStyles: {
+                            container: {
+                                backgroundColor: phase.color,
+                                borderRadius: 20,
+                                elevation: 4,
+                            },
+                            text: {
+                                color: "white",
+                                fontWeight: "600",
+                            },
+                            },
+                        };
+                        }
+                        currDate = currDate.add(1, "days");
                     }
-                    currentDate = currentDate.add(1, "days");
-                }
                 }
             });
         });
         return markings;
     };
 
-    // Handle day press for CRUD operations
+    // Handle day pressing for CRUD operations
     const onDayPress = async (day: DayPress) => {
         if (!isLoggingMode) return;
     
@@ -311,6 +313,7 @@ export default function CalendarView() {
         }
     };
 
+    // Asign names to cycles e.g. May 2025
     const assignNamesToCycles = (cycles: Cycle[]): Cycle[] => {
         return cycles.map(cycle => {
             const { month, phases } = cycle;
@@ -458,7 +461,7 @@ export default function CalendarView() {
             <Calendar
             style={{ width: "100%" }}
             onDayPress={onDayPress}
-            markedDates={showMarkedDates()}
+            markedDates={showColoredDates()}
             markingType={"custom"}
             theme={{
                 backgroundColor: "#F5F0FA",
@@ -484,7 +487,7 @@ export default function CalendarView() {
                 ))}
             </View>
 
-            {/* Modal for Editing */}
+            {/* Modal for Edit Cyle */}
             <Modal
                 animationType="slide"
                 visible={isModalVisible}
@@ -495,12 +498,13 @@ export default function CalendarView() {
                     <View style={styles.modalContainer}>
                         <Text style={styles.modalTitle}>Edit Cycle</Text>
 
-                        {/* Cycle Dropdown */}
+                        {/* Cycle Selection */}
                         <ScrollView
                             style={{ maxHeight: 40, marginBottom: 20 }}
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
                         >
+                            {/* Buttons for each Cycle */}
                             {cycles.map((cycle) => (
                                 <TouchableOpacity
                                     key={cycle.id}
@@ -525,11 +529,11 @@ export default function CalendarView() {
                         {/* Editing phases */}
                         <View style={{ maxHeight: 320 }}>
                             {editedCycle?.phases[0] && (
-                                <View style={styles.phaseEditRow}>
+                                <View style={styles.phaseEdit}>
                                     <Text style={styles.phaseLabel}>Menstrual Phase</Text>
-                                    <View style={styles.phaseDatesRow}>
-                                        <View style={styles.phaseDateInputContainer}>
-                                            <Text style={styles.phaseDateLabel}>Start</Text>
+                                    <View style={styles.phaseDates}>
+                                        <View style={styles.phaseDatesContainer}>
+                                            <Text style={styles.phaseDatesStartEnd}>Start</Text>
                                             <TextInput
                                                 style={styles.dateInput}
                                                 value={editedCycle.phases[0].start || ""}
@@ -539,8 +543,8 @@ export default function CalendarView() {
                                             />
                                         </View>
 
-                                        <View style={styles.phaseDateInputContainer}>
-                                            <Text style={styles.phaseDateLabel}>End</Text>
+                                        <View style={styles.phaseDatesContainer}>
+                                            <Text style={styles.phaseDatesStartEnd}>End</Text>
                                             <TextInput
                                                 style={styles.dateInput}
                                                 value={editedCycle.phases[0].end || ""}
@@ -581,6 +585,8 @@ const styles = StyleSheet.create({
     predictionContainer: {
         backgroundColor: "rgba(255, 255, 255, 0.9)",
         borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(45, 27, 61, 0.1)',
         marginHorizontal: 8,
         marginTop: 10,
         marginBottom: 20,
@@ -591,36 +597,34 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 3.84,
         elevation: 5,
-        borderWidth: 1,
-        borderColor: 'rgba(45, 27, 61, 0.1)',
     },
     statsTitle: {
+        color: '#2D1B3D',
+        fontFamily: "Helvetica",
         fontSize: 20,
         fontWeight: 'bold',
-        color: '#2D1B3D',
-        marginBottom: 8,
-        fontFamily: "Helvetica",
         textAlign: "center",
+        marginBottom: 8,
     },
     predictionText: {
-        fontSize: 16,
         color: '#2D1B3D',
         fontFamily: "Helvetica",
+        fontSize: 16,
         opacity: 0.8,
         textAlign: "center",
         marginBottom: 15,
     },
     buttonContainer: {
         flexDirection: "row",
+        flexWrap: "wrap",
         justifyContent: "center",
         gap: 10,
-        flexWrap: "wrap",
     },
     logButton: {
         backgroundColor: "#583C8A",
+        borderRadius: 18,
         paddingVertical: 6,
         paddingHorizontal: 12,
-        borderRadius: 18,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -637,9 +641,9 @@ const styles = StyleSheet.create({
     },
     resetButton: {
         backgroundColor: "rgba(45, 27, 61, 0.85)",
+        borderRadius: 18,
         paddingVertical: 6,
         paddingHorizontal: 12,
-        borderRadius: 18,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -648,9 +652,9 @@ const styles = StyleSheet.create({
     },
     editButton: {
         backgroundColor: "#770737",
+        borderRadius: 18,
         paddingVertical: 6,
         paddingHorizontal: 12,
-        borderRadius: 18,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
@@ -663,45 +667,37 @@ const styles = StyleSheet.create({
         fontFamily: "Helvetica",
         fontWeight: '600',
     },
-    // calendarContainer: {
-    //     backgroundColor: "#f7effa",
-    //     paddingHorizontal: 8,
-    //     marginHorizontal: 8,
-    //     borderRadius: 8,
-    //     marginBottom: 22,
-    //     flex: 1,
-    // },
     calendarContainer: {
         backgroundColor: "#F5F0FA",
-        marginHorizontal: 8,
         borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(45, 27, 61, 0.1)',
+        marginHorizontal: 8,
+        marginBottom: 20,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3.84,
         elevation: 5,
-        borderWidth: 1,
-        borderColor: 'rgba(45, 27, 61, 0.1)',
-        marginBottom: 20,
-        overflow: 'hidden', // Ensure calendar doesn't overflow container
+        overflow: 'hidden',
     },
     legendContainer: {
         flexDirection: "row",
+        backgroundColor: "rgba(255, 255, 255, 0.9)",
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: 'rgba(45, 27, 61, 0.1)',
         justifyContent: "space-around",
         alignItems: "center",
-        backgroundColor: "rgba(255, 255, 255, 0.9)",
         paddingVertical: 8,
         paddingHorizontal: 10,
         marginHorizontal: 8,
         marginBottom: 6,
-        borderRadius: 12,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.1,
         shadowRadius: 3.84,
         elevation: 5,
-        borderWidth: 1,
-        borderColor: 'rgba(45, 27, 61, 0.1)',
     },
     legendItem: {
         flexDirection: "row",
@@ -709,15 +705,15 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     legendColor: {
+        borderRadius: 3,
         width: 12,
         height: 12,
-        borderRadius: 3,
     },
     legendText: {
-        fontSize: 12,
-        fontWeight: "500",
         color: "#2D1B3D",
         fontFamily: "Helvetica",
+        fontSize: 12,
+        fontWeight: "500",
     },
     modalBackground: {
         flex: 1,
@@ -735,20 +731,20 @@ const styles = StyleSheet.create({
         maxHeight: "80%",
     },
     modalTitle: {
+        color: "#770737",
+        textAlign: "center",
         fontSize: 22,
         fontWeight: "700",
         marginBottom: 15,
-        color: "#770737",
-        textAlign: "center",
     },
     cycleSelectorButton: {
         backgroundColor: "#eee",
-        paddingVertical: 6,
-        paddingHorizontal: 12,
         borderRadius: 20,
-        marginRight: 10,
         borderWidth: 1,
         borderColor: "#ccc",
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        marginRight: 10,
     },
     cycleSelectorButtonSelected: {
         backgroundColor: "#770737",
@@ -761,7 +757,7 @@ const styles = StyleSheet.create({
     cycleSelectorTextSelected: {
         color: "white",
     },
-    phaseEditRow: {
+    phaseEdit: {
         marginBottom: 20,
     },
     phaseLabel: {
@@ -770,15 +766,15 @@ const styles = StyleSheet.create({
         marginBottom: 6,
         color: "#770737",
     },
-    phaseDatesRow: {
+    phaseDates: {
         flexDirection: "row",
         justifyContent: "space-between",
     },
-    phaseDateInputContainer: {
+    phaseDatesContainer: {
         flex: 1,
         marginRight: 10,
     },
-    phaseDateLabel: {
+    phaseDatesStartEnd: {
         fontSize: 12,
         color: "#666",
         marginBottom: 4,
@@ -788,9 +784,9 @@ const styles = StyleSheet.create({
         borderColor: "#ccc",
         borderRadius: 6,
         paddingHorizontal: 8,
-        paddingVertical: Platform.OS === "ios" ? 10 : 6,
         fontSize: 14,
         color: "#222",
+        paddingVertical: Platform.OS === "ios" ? 10 : 6,
     },
     modalButtonsRow: {
         flexDirection: "row",
@@ -798,22 +794,22 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     modalButtonCancel: {
-        backgroundColor: "#ccc",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 8,
         flex: 1,
+        backgroundColor: "#ccc",
+        borderRadius: 8,
         marginRight: 10,
         alignItems: "center",
-    },
-    modalButtonSave: {
-        backgroundColor: "#770737",
         paddingVertical: 10,
         paddingHorizontal: 20,
-        borderRadius: 8,
+    },
+    modalButtonSave: {
         flex: 1,
-        marginLeft: 10,
+        backgroundColor: "#770737",
+        borderRadius: 8,
         alignItems: "center",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginLeft: 10,
     },
     modalButtonText: {
         color: "white",
