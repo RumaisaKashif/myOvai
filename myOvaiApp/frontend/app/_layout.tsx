@@ -26,7 +26,6 @@ export default function RootLayout() {
     return () => unsubscribe();
   }, []);
 
-  // Wait for loading to complete
   if (isLoading || !fontsLoaded) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
