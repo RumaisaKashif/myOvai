@@ -1,6 +1,6 @@
-import { TouchableOpacity, Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { signOut, onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
@@ -22,15 +22,6 @@ export default function HomeScreen() {
     return () => unsubscribe();
   }, []);
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      console.log('User signed out successfully');
-    } catch (error) {
-      console.error('Error logging out:', error);
-    }
-  };
-
   if (!isLoggedIn) {
     // show a loading or empty view while redirecting
     return (
@@ -49,7 +40,7 @@ export default function HomeScreen() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.titleContainer}>
           <Text style={styles.welcomeText}>
-            Hi, {user?.displayName || user?.email?.split("@")[0] || "User"}!
+            Hi, {user?.displayName || user?.email?.split("@")[0] || "User"}
           </Text>
           <Text style={styles.appTitle}>Welcome to myOvai!</Text>
         </View>
@@ -62,9 +53,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>Logout</Text>
-        </TouchableOpacity>
       </SafeAreaView>
     </LinearGradient>
   );

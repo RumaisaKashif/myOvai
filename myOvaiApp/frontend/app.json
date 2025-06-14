@@ -8,6 +8,7 @@
     "scheme": "myovaiapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "permissions": ["CAMERA", "MEDIA_LIBRARY"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.pallas.myOvai",
