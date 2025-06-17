@@ -5,7 +5,7 @@ import { auth } from '../../firebaseConfig';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import CalendarView from '../components/calendar';
 export default function HomeScreen() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!auth.currentUser);
   const [user, setUser] = useState(auth.currentUser);
