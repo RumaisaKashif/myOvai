@@ -12,7 +12,14 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.pallas.myOvai",
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "permissions": {
+        "notifications": {
+          "alert": true,
+          "badge": true,
+          "sound": true
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +28,11 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.pallas.myOvai",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-services.json",
+      "permissions": [
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE"
+      ]
     },
     "web": {
       "bundler": "metro",
