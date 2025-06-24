@@ -48,7 +48,8 @@
       "router": {},
       "eas": {
         "projectId": "97d00c25-1675-4355-a142-a25e1ea98d12"
-      }
+      },
+      "backendUrl": "https://myovaibackend.onrender.com"
     },
     "owner": "rumaisakashif"
   }

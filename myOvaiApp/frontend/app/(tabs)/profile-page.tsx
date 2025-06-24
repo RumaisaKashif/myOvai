@@ -14,18 +14,16 @@ export default function ProfilePage() {
   const [isResetLoading, setIsResetLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showResetConfirmation, setShowResetConfirmation] = useState(false);
-  const [photoURL, setPhotoURL] = useState<string | null>(null);
   const router = useRouter();
 
-  // Load current user data
+  // Get user data
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setUsername(user.displayName ?? '');
         setUserEmail(user.email ?? '');
-        setPhotoURL(user.photoURL ?? null); // Load profile photo
       } else {
-        router.replace('/auth/login'); // Redirect to login if not authenticated
+        router.replace('/auth/login');
       }
     });
     return () => unsubscribe();
@@ -150,11 +148,12 @@ export default function ProfilePage() {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.titleContainer}>
           <Text style={styles.pageTitle}>Your Profile</Text>
+          <Text style={styles.subtitleText}>Edit your username or password</Text>
         </View>
-        {/* Space for profile photo */}
+        {/* Space for profile photo - to be implemented later */}
         <View style={styles.photoPlaceholder}></View>
         <View style={styles.formContainer}>
-          {/* Username Input */}
+          {/* Edittable username container */}
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Username</Text>
             <TextInput
@@ -170,7 +169,7 @@ export default function ProfilePage() {
               editable={!isLoading && !isResetLoading}
             />
           </View>
-          {/* User Email */}
+          {/* User email container */}
           <View style={styles.inputContainer}>
                 <Text style={styles.label}>Email</Text>
                 <View style={styles.input}>
@@ -195,7 +194,7 @@ export default function ProfilePage() {
               {isLoading ? 'Saving...' : 'Done'}
             </Text>
           </TouchableOpacity>
-          {/* Reset Password Button */}
+          {/* Reset Password */}
           <TouchableOpacity
             style={[styles.resetPasswordContainer, { marginTop: 10 }]}
             onPress={handleResetPassword}
@@ -245,6 +244,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
   },
+  subtitleText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '400',
+    fontFamily: 'Helvetica',
+    textAlign: 'center',
+    opacity: 0.9,
+    marginTop: 5,
+  },
   pageTitle: {
     color: 'white',
     fontSize: 28,
@@ -253,7 +261,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   photoPlaceholder: {
-    height: '20%',
+    height: '10%',
     width: '100%',
   },
   formContainer: {
@@ -344,7 +352,7 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 6,
     marginBottom: 20,
-    marginTop: 30,
+    marginTop: 60,
     width: '80%'
   },
   logoutText: { 

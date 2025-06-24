@@ -1,48 +1,43 @@
 from flask import Flask, request, jsonify
 import os
-import firebase_admin
-from firebase_admin import credentials, auth, initialize_app
+from dotenv import load_dotenv
+import google.generativeai as genai
+from flask_cors import CORS
 
-# Initialize Flask app
+load_dotenv()
+
+# Get API key
+API_KEY = os.getenv("GOOGLE_API_KEY")
+if not API_KEY:
+    raise ValueError("API key not found.")
+
+genai.configure(api_key=API_KEY)
 app = Flask(__name__)
+CORS(app)
 
-# Initialize Firebase Admin SDK
-# Get the key path from an environment variable
-key_path = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
-
-if not key_path:
-    raise ValueError("GOOGLE_APPLICATION_CREDENTIALS variable is not available.")
-
-cred = credentials.Certificate(key_path)
-firebase_admin.initialize_app(cred)
-
-# Route to sign up users
-@app.route('/signup', methods=['POST'])
-def signup():
+# Query Gemini
+def query_gemini(prompt):
     try:
-        data = request.json
-        email = data['email']
-        password = data['password']
-
-        # Create user in Firebase
-        user = auth.create_user(email=email, password=password)
-        return jsonify({"message": "User created successfully", "uid": user.uid}), 200
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(prompt)
+        # If response contains valid text, return markdown
+        if response.text:
+            return response.text 
+        else:
+            return "No response text found."
     except Exception as e:
-        return jsonify({"Authentication error": str(e)}), 400
+        return f"Error: {str(e)}"
 
-# Route to verify users (e.g., on login)
-@app.route('/verify-token', methods=['POST'])
-def verify_token():
-    try:
-        data = request.json
-        token = data['token']
+# Route for chatbot requests
+@app.route("/chat", methods=["POST"])
+def chat():
+    data = request.get_json()
+    prompt = data.get("prompt", "").strip()
+    if not prompt:
+        return jsonify({"error": "No prompt provided"}), 400
+    response = query_gemini(prompt)
+    return jsonify({"response": response})
 
-        # Verify Firebase token
-        decoded_token = auth.verify_id_token(token)
-        return jsonify({"message": "Token verified", "user": decoded_token}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-# Start the Flask server
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    # debug=True for local testing
+    app.run(host="0.0.0.0", port=5001, debug=True)

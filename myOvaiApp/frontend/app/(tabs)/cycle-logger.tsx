@@ -1,4 +1,3 @@
-import { Image } from 'expo-image';
 import { Platform, StyleSheet, Text, View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -523,6 +522,7 @@ export default function CycleLoggerScreen() {
             <SafeAreaView style={styles.safeArea}>
                 <View style={styles.titleContainer}>
                     <Text style={styles.pageTitle}>Cycle Logger</Text>
+                    <Text style={styles.subtitleText}>Track how you're feeling today</Text>
                 </View>
                 <AuthProvider>
                     <CycleLoggerContent />
@@ -556,6 +556,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
+    },
+    subtitleText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: '400',
+        fontFamily: 'Helvetica',
+        textAlign: 'center',
+        opacity: 0.9,
+        marginTop: 5,
     },
     pageTitle: {
         color: 'white',
