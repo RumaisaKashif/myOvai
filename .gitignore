@@ -4,6 +4,12 @@ node_modules/
 # ignore venv
 venv/
 
+.env
+
+config.py
+
+myovai-firebase-adminsdk-fbsvc-998d4ca9c7.json
+
 # Expo-generated ignores
 expo-env.d.ts
 
