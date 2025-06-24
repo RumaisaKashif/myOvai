@@ -1,6 +1,9 @@
 # Ignore node modules folder
 node_modules/
 
+# ignore venv
+venv/
+
 # Expo-generated ignores
 expo-env.d.ts
 
