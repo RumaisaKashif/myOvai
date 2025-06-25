@@ -5,7 +5,10 @@
 // import { useEffect, useState } from 'react';
 // import { useRouter } from 'expo-router';
 // import { LinearGradient } from 'expo-linear-gradient';
-// import CalendarView from '../components/calendar';
+// import ChatbotWidget from '../components/chatbot-widget';
+// import NextPeriodCalculator from '../components/next-period';
+// import { AuthProvider } from '../../AuthContext';
+
 // export default function HomeScreen() {
 //   const [isLoggedIn, setIsLoggedIn] = useState(!!auth.currentUser);
 //   const [user, setUser] = useState(auth.currentUser);
@@ -16,14 +19,13 @@
 //       setIsLoggedIn(!!user);
 //       setUser(user);
 //       if (!user) {
-//         router.replace('/auth/login');  // Redirect if not logged in
+//         router.replace('/auth/login');
 //       }
 //     });
 //     return () => unsubscribe();
 //   }, []);
 
 //   if (!isLoggedIn) {
-//     // show a loading or empty view while redirecting
 //     return (
 //       <LinearGradient
 //         colors={['#E6D7FF', '#D8C7F0', '#E0BBE4']}
@@ -40,25 +42,23 @@
 //       <SafeAreaView style={styles.safeArea}>
 //         <View style={styles.titleContainer}>
 //           <Text style={styles.welcomeText}>
-//             Hi, {user?.displayName || user?.email?.split("@")[0] || "User"}
+//             Hi, {user?.displayName || user?.email?.split('@')[0] || 'User'}
 //           </Text>
 //           <Text style={styles.appTitle}>Welcome to myOvai!</Text>
 //         </View>
-        
 //         <View style={styles.contentContainer}>
-//           {/* Add cycle info */}
 //           <View style={styles.statsCard}>
 //             <Text style={styles.statsTitle}>Your Cycle Overview</Text>
-//             <Text style={styles.statsText}>Next period starts in 1 day</Text>
+//             <AuthProvider>
+//               <NextPeriodCalculator />
+//             </AuthProvider>
 //           </View>
 //         </View>
-
+//         <ChatbotWidget />
 //       </SafeAreaView>
 //     </LinearGradient>
 //   );
 // }
-
-// // Note: renaming this file causes errors
 
 // const styles = StyleSheet.create({
 //   fullScreen: {
@@ -68,7 +68,7 @@
 //     left: 0,
 //     right: 0,
 //     bottom: 0,
-//     zIndex: 999, 
+//     zIndex: 999,
 //   },
 //   container: {
 //     flex: 1,
@@ -81,11 +81,11 @@
 //     width: '100%',
 //     paddingHorizontal: 30,
 //     paddingVertical: 25,
-//     alignItems: "center",
-//     backgroundColor: "rgba(45, 27, 61, 0.85)", 
+//     alignItems: 'center',
+//     backgroundColor: 'rgba(45, 27, 61, 0.85)',
 //     borderBottomLeftRadius: 25,
 //     borderBottomRightRadius: 25,
-//     shadowColor: "#000",
+//     shadowColor: '#000',
 //     shadowOffset: {
 //       width: 0,
 //       height: 2,
@@ -97,16 +97,16 @@
 //   welcomeText: {
 //     color: 'white',
 //     fontSize: 18,
-//     fontWeight: "500",
-//     fontFamily: "Helvetica",
+//     fontWeight: '500',
+//     fontFamily: 'Helvetica',
 //     marginBottom: 5,
 //     opacity: 0.9,
 //   },
 //   appTitle: {
 //     color: 'white',
 //     fontSize: 28,
-//     fontWeight: "bold",
-//     fontFamily: "Helvetica",
+//     fontWeight: 'bold',
+//     fontFamily: 'Helvetica',
 //     textAlign: 'center',
 //   },
 //   contentContainer: {
@@ -122,7 +122,7 @@
 //     padding: 25,
 //     width: '90%',
 //     alignItems: 'center',
-//     shadowColor: "#000",
+//     shadowColor: '#000',
 //     shadowOffset: {
 //       width: 0,
 //       height: 2,
@@ -138,37 +138,14 @@
 //     fontWeight: 'bold',
 //     color: '#2D1B3D',
 //     marginBottom: 10,
-//     fontFamily: "Helvetica",
+//     fontFamily: 'Helvetica',
 //   },
 //   statsText: {
 //     fontSize: 16,
 //     color: '#2D1B3D',
-//     fontFamily: "Helvetica",
+//     fontFamily: 'Helvetica',
 //     opacity: 0.8,
 //   },
-//   logoutButton: {
-//     backgroundColor: "rgba(45, 27, 61, 0.85)",
-//     borderRadius: 25,
-//     marginBottom: 30,
-//     width: '40%',
-//     alignItems: 'center',
-//     shadowColor: "#000",
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.84,
-//     elevation: 5,
-//   },
-//   logoutText: { 
-//     color: 'white',
-//     fontSize: 18,
-//     fontFamily: "Helvetica",
-//     fontWeight: '600',
-//     paddingVertical: 12,
-//     paddingHorizontal: 20,
-//   }
 // });
 import { Text, View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -178,6 +155,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import ChatbotWidget from '../components/chatbot-widget';
+import NextPeriodCalculator from '../components/next-period';
+import CycleRing from '../components/CycleRing';
+import { AuthProvider } from '../../AuthContext';
 
 export default function HomeScreen() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!auth.currentUser);
@@ -205,6 +185,7 @@ export default function HomeScreen() {
   }
 
   return (
+    <AuthProvider>
     <LinearGradient
       colors={['#E6D7FF', '#D8C7F0', '#E0BBE4']}
       style={styles.container}
@@ -219,12 +200,14 @@ export default function HomeScreen() {
         <View style={styles.contentContainer}>
           <View style={styles.statsCard}>
             <Text style={styles.statsTitle}>Your Cycle Overview</Text>
-            <Text style={styles.statsText}>Next period starts in 1 day</Text>
+              <NextPeriodCalculator />
           </View>
         </View>
+        <CycleRing />
         <ChatbotWidget />
       </SafeAreaView>
     </LinearGradient>
+    </AuthProvider>
   );
 }
 
@@ -307,11 +290,5 @@ const styles = StyleSheet.create({
     color: '#2D1B3D',
     marginBottom: 10,
     fontFamily: 'Helvetica',
-  },
-  statsText: {
-    fontSize: 16,
-    color: '#2D1B3D',
-    fontFamily: 'Helvetica',
-    opacity: 0.8,
   },
 });
