@@ -73,19 +73,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="symptom-logger"
-        options={{
-          title: 'Symptom Logger',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons 
-              name={focused ? "heart" : "heart-outline"} 
-              size={size} 
-              color={color} 
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
         name="profile-page"
         options={{
           title: 'Profile',
