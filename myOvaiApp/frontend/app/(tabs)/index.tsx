@@ -1,153 +1,5 @@
-// import { Text, View, StyleSheet } from 'react-native';
-// import { SafeAreaView } from 'react-native-safe-area-context';
-// import { onAuthStateChanged } from 'firebase/auth';
-// import { auth } from '../../firebaseConfig';
-// import { useEffect, useState } from 'react';
-// import { useRouter } from 'expo-router';
-// import { LinearGradient } from 'expo-linear-gradient';
-// import ChatbotWidget from '../components/chatbot-widget';
-// import NextPeriodCalculator from '../components/next-period';
-// import { AuthProvider } from '../../AuthContext';
-
-// export default function HomeScreen() {
-//   const [isLoggedIn, setIsLoggedIn] = useState(!!auth.currentUser);
-//   const [user, setUser] = useState(auth.currentUser);
-//   const router = useRouter();
-
-//   useEffect(() => {
-//     const unsubscribe = onAuthStateChanged(auth, (user) => {
-//       setIsLoggedIn(!!user);
-//       setUser(user);
-//       if (!user) {
-//         router.replace('/auth/login');
-//       }
-//     });
-//     return () => unsubscribe();
-//   }, []);
-
-//   if (!isLoggedIn) {
-//     return (
-//       <LinearGradient
-//         colors={['#E6D7FF', '#D8C7F0', '#E0BBE4']}
-//         style={styles.fullScreen}
-//       />
-//     );
-//   }
-
-//   return (
-//     <LinearGradient
-//       colors={['#E6D7FF', '#D8C7F0', '#E0BBE4']}
-//       style={styles.container}
-//     >
-//       <SafeAreaView style={styles.safeArea}>
-//         <View style={styles.titleContainer}>
-//           <Text style={styles.welcomeText}>
-//             Hi, {user?.displayName || user?.email?.split('@')[0] || 'User'}
-//           </Text>
-//           <Text style={styles.appTitle}>Welcome to myOvai!</Text>
-//         </View>
-//         <View style={styles.contentContainer}>
-//           <View style={styles.statsCard}>
-//             <Text style={styles.statsTitle}>Your Cycle Overview</Text>
-//             <AuthProvider>
-//               <NextPeriodCalculator />
-//             </AuthProvider>
-//           </View>
-//         </View>
-//         <ChatbotWidget />
-//       </SafeAreaView>
-//     </LinearGradient>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   fullScreen: {
-//     flex: 1,
-//     position: 'absolute',
-//     top: 0,
-//     left: 0,
-//     right: 0,
-//     bottom: 0,
-//     zIndex: 999,
-//   },
-//   container: {
-//     flex: 1,
-//   },
-//   safeArea: {
-//     flex: 1,
-//     alignItems: 'center',
-//   },
-//   titleContainer: {
-//     width: '100%',
-//     paddingHorizontal: 30,
-//     paddingVertical: 25,
-//     alignItems: 'center',
-//     backgroundColor: 'rgba(45, 27, 61, 0.85)',
-//     borderBottomLeftRadius: 25,
-//     borderBottomRightRadius: 25,
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.25,
-//     shadowRadius: 3.84,
-//     elevation: 5,
-//   },
-//   welcomeText: {
-//     color: 'white',
-//     fontSize: 18,
-//     fontWeight: '500',
-//     fontFamily: 'Helvetica',
-//     marginBottom: 5,
-//     opacity: 0.9,
-//   },
-//   appTitle: {
-//     color: 'white',
-//     fontSize: 28,
-//     fontWeight: 'bold',
-//     fontFamily: 'Helvetica',
-//     textAlign: 'center',
-//   },
-//   contentContainer: {
-//     flex: 1,
-//     width: '100%',
-//     paddingHorizontal: 20,
-//     paddingTop: 30,
-//     alignItems: 'center',
-//   },
-//   statsCard: {
-//     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-//     borderRadius: 20,
-//     padding: 25,
-//     width: '90%',
-//     alignItems: 'center',
-//     shadowColor: '#000',
-//     shadowOffset: {
-//       width: 0,
-//       height: 2,
-//     },
-//     shadowOpacity: 0.1,
-//     shadowRadius: 3.84,
-//     elevation: 5,
-//     borderWidth: 1,
-//     borderColor: 'rgba(45, 27, 61, 0.1)',
-//   },
-//   statsTitle: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//     color: '#2D1B3D',
-//     marginBottom: 10,
-//     fontFamily: 'Helvetica',
-//   },
-//   statsText: {
-//     fontSize: 16,
-//     color: '#2D1B3D',
-//     fontFamily: 'Helvetica',
-//     opacity: 0.8,
-//   },
-// });
-import { Text, View, StyleSheet } from 'react-native';
+import { Alert, Text, View, StyleSheet, Button } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
@@ -184,6 +36,16 @@ export default function HomeScreen() {
     );
   }
 
+  const resetOnboarding = async () => {
+    try {
+      await AsyncStorage.removeItem('hasLaunched');
+      Alert.alert('Success', 'Onboarding reset. Log out and log in to see onboarding screens.');
+    } catch (error) {
+      console.error('Error resetting onboarding:', error);
+      Alert.alert('Failure', 'Failed to reset onboarding. Please try again.');
+    }
+  };
+
   return (
     <AuthProvider>
     <LinearGradient
@@ -205,6 +67,7 @@ export default function HomeScreen() {
         </View>
         <CycleRing />
         <ChatbotWidget />
+        <Button title="Reset Onboarding (Debug)" onPress={resetOnboarding} />
       </SafeAreaView>
     </LinearGradient>
     </AuthProvider>
