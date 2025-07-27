@@ -36,16 +36,6 @@ export default function HomeScreen() {
     );
   }
 
-  const resetOnboarding = async () => {
-    try {
-      await AsyncStorage.removeItem('hasLaunched');
-      Alert.alert('Success', 'Onboarding reset. Log out and log in to see onboarding screens.');
-    } catch (error) {
-      console.error('Error resetting onboarding:', error);
-      Alert.alert('Failure', 'Failed to reset onboarding. Please try again.');
-    }
-  };
-
   return (
     <AuthProvider>
     <LinearGradient
@@ -67,7 +57,6 @@ export default function HomeScreen() {
         </View>
         <CycleRing />
         <ChatbotWidget />
-        <Button title="Reset Onboarding (Debug)" onPress={resetOnboarding} />
       </SafeAreaView>
     </LinearGradient>
     </AuthProvider>

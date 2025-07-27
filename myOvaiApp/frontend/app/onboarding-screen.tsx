@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useState } from 'react';
@@ -15,18 +15,22 @@ export default function OnboardingScreen() {
     {
       title: 'Log Your Cycles',
       description: 'Easily track your menstrual cycles with a few taps. Stay informed about your cycle history and patterns.',
+      image: require('../assets/onboarding1.png'),
     },
     {
       title: 'Track Symptoms',
       description: 'Record symptoms like mood changes, cramps, or energy levels to understand your body better.',
+      image: require('../assets/onboarding2.png'),
     },
     {
       title: 'Ask Your AI Assistant',
-      description: 'Get personalized insights from your AI-powered menstrual health assistant anytime.',
+      description: 'Get personalized insights from your AI-powered menstrual health assistant anytime, anywhere.',
+      image: require('../assets/onboarding4.png'),
     },
     {
       title: 'View Cycle Predictions',
-      description: 'See predictions like "Day 8 of Luteal Phase" to plan your days with confidence.',
+      description: 'Easily check when your next period is set to begin and plan your days with confidence.',
+      image: require('../assets/onboarding3.png'),
     },
   ];
 
@@ -34,12 +38,12 @@ export default function OnboardingScreen() {
     if (currentScreen < onboardingScreens.length - 1) {
       setCurrentScreen(currentScreen + 1);
     } else {
-      router.replace('./(tabs)'); // Navigate to HomeScreen after onboarding
+      router.replace('./(tabs)'); // Navigate to home after onboarding
     }
   };
 
   const handleSkip = () => {
-    router.replace('./(tabs)'); // Skip onboarding and go to HomeScreen
+    router.replace('./(tabs)'); // Skip onboarding and go to home
   };
 
   return (
@@ -52,6 +56,12 @@ export default function OnboardingScreen() {
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
         <View style={styles.contentContainer}>
+          <Image
+            source={onboardingScreens[currentScreen].image}
+            style={styles.clipart}
+            resizeMode="contain"
+            onError={(error) => console.error('Image load error:', error.nativeEvent.error)}
+          />
           <View style={styles.card}>
             <Text style={styles.title}>{onboardingScreens[currentScreen].title}</Text>
             <Text style={styles.description}>{onboardingScreens[currentScreen].description}</Text>
@@ -117,6 +127,16 @@ const styles = StyleSheet.create({
     elevation: 5,
     borderWidth: 1,
     borderColor: 'rgba(45, 27, 61, 0.1)',
+    marginTop: 0,
+  },
+  clipart: {
+    width: 500,
+    height: 400,
+    marginBottom: 0,
+    shadowColor: '#2D1B3D',
+    shadowOffset: { width: 5, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
   title: {
     fontSize: 24,

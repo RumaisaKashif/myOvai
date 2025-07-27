@@ -33,7 +33,7 @@ export const useGoogleAuth = () => {
       const user = userCredential.user;
       
       console.log('Google Sign-In successful:', user.uid);
-      router.replace('/(tabs)');
+      router.replace('../onboarding-screen');
       
       return { success: true, user };
     } catch (err) {
@@ -50,7 +50,7 @@ export const useGoogleAuth = () => {
         const userCredential = await signInWithPopup(auth, provider);
         const user = userCredential.user;
         console.log('Google Sign-In (web) successful:', user.uid);
-        router.replace('/(tabs)');
+        router.replace('../onboarding-screen');
         return { success: true, user };
       } catch (err) {
         const errorMessage = err instanceof FirebaseError ? err.message : 'Google Sign-In failed';

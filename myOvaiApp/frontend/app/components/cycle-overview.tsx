@@ -1,5 +1,6 @@
-import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import React, { useEffect, useRef } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Animated } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "../../AuthContext";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
@@ -47,7 +48,7 @@ export default function CycleOverview({
 }: CycleOverviewProps) {
     const { user } = useAuth();
     const userName = user?.displayName || user?.email?.split("@")[0] || "User";
-
+    const fadeAnim = useRef(new Animated.Value(0)).current;
     // Save to Firebase Firestore
     const saveToFirebase = async (newCycle: Cycle[]): Promise<boolean> => {
         if (!user || !user.uid) {
@@ -101,6 +102,15 @@ export default function CycleOverview({
         }
     };
 
+    // Animation for instructions to user when logging mode is enabled
+    useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: isLoggingMode ? 1 : 0,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    }, [isLoggingMode]);
+
     return (
         <View style={styles.predictionContainer}>
             <Text style={styles.statsTitle}>Cycle Overview</Text>
@@ -109,24 +119,41 @@ export default function CycleOverview({
                     ? `Your next period starts in ${nextPeriodDays} days`
                     : "Select your cycle dates"}
             </Text>
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                    style={[styles.logButton, isLoggingMode && styles.logButtonActive]}
-                    onPress={toggleLoggingMode}
-                >
-                    <Text style={styles.buttonText}>
-                        {isLoggingMode ? "Log Dates" : "Log Dates"}
+            {isLoggingMode && (
+                <Animated.View style={{ opacity: fadeAnim }}>
+                    <Text style={styles.loggingMessage}>
+                        To indicate the start or end date of your period, click a date on the calendar below.
                     </Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.symptomButton} onPress={openSymptomModal}>
-                    <Text style={styles.buttonText}>Add Symptoms</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.editButton} onPress={openModal}>
-                    <Text style={styles.buttonText}>Edit Cycle</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.resetButton} onPress={handleReset}>
-                    <Text style={styles.buttonText}>Reset Cycles</Text>
-                </TouchableOpacity>
+                </Animated.View>
+            )}
+            <View style={styles.buttonContainer}>
+                <View style={styles.buttonWrapper}>
+                    <TouchableOpacity
+                        style={[styles.button, isLoggingMode && styles.buttonActive]}
+                        onPress={toggleLoggingMode}
+                    >
+                        <Ionicons name="calendar-outline" size={24} color="white" />
+                    </TouchableOpacity>
+                    <Text style={styles.buttonLabel}>Log Dates</Text>
+                </View>
+                <View style={styles.buttonWrapper}>
+                    <TouchableOpacity style={styles.button} onPress={openSymptomModal}>
+                        <Ionicons name="medkit-outline" size={24} color="white" />
+                    </TouchableOpacity>
+                    <Text style={styles.buttonLabel}>Add Symptoms</Text>
+                </View>
+                <View style={styles.buttonWrapper}>
+                    <TouchableOpacity style={styles.button} onPress={openModal}>
+                        <Ionicons name="pencil-outline" size={24} color="white" />
+                    </TouchableOpacity>
+                    <Text style={styles.buttonLabel}>Edit Cycle</Text>
+                </View>
+                <View style={styles.buttonWrapper}>
+                    <TouchableOpacity style={styles.button} onPress={handleReset}>
+                        <Ionicons name="refresh-outline" size={24} color="white" />
+                    </TouchableOpacity>
+                    <Text style={styles.buttonLabel}>Reset Cycles</Text>
+                </View>
             </View>
         </View>
     );
@@ -141,7 +168,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
         marginTop: 10,
         marginBottom: 20,
-        paddingVertical: 30,
+        paddingVertical: 40, 
         paddingHorizontal: 10,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
@@ -163,70 +190,53 @@ const styles = StyleSheet.create({
         fontSize: 16,
         opacity: 0.8,
         textAlign: "center",
+        marginBottom: 10,
+    },
+    loggingMessage: {
+        color: '#2D1B3D',
+        fontFamily: "Helvetica",
+        fontSize: 14,
+        opacity: 0.8,
+        textAlign: "center",
         marginBottom: 15,
+        paddingHorizontal: 20,
     },
     buttonContainer: {
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "center",
-        gap: 10,
+        justifyContent: "space-between",
+        paddingHorizontal: 20,
     },
-    logButton: {
-        backgroundColor: "#583C8A",
-        borderRadius: 18,
-        paddingVertical: 6,
-        paddingHorizontal: 12,
+    buttonWrapper: {
+        alignItems: "center",
+        width: "45%", 
+        marginVertical: 10,
+    },
+    button: {
+        backgroundColor: "rgba(45, 27, 61, 0.85)",
+        borderRadius: 30, 
+        width: 60,
+        height: 60,
+        justifyContent: "center",
+        alignItems: "center",
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 3.84,
         elevation: 5,
     },
-    logButtonActive: {
-        backgroundColor: "#9279BA",
-        shadowColor: "#9279BA",
-        shadowOffset: { width: 0, height: 2 },
+    buttonActive: {
+        backgroundColor: "#6B4E8A",
         shadowOpacity: 0.3,
         shadowRadius: 4,
         elevation: 6,
     },
-    symptomButton: {
-        backgroundColor: "#2E8B57",
-        borderRadius: 18,
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    resetButton: {
-        backgroundColor: "rgba(45, 27, 61, 0.85)",
-        borderRadius: 18,
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    editButton: {
-        backgroundColor: "#770737",
-        borderRadius: 18,
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    buttonText: {
-        color: 'white',
-        fontSize: 15,
+    buttonLabel: {
+        color: '#2D1B3D',
         fontFamily: "Helvetica",
-        fontWeight: '600',
+        fontSize: 14,
+        fontWeight: 'bold',
+        textAlign: "center",
+        marginTop: 8,
     },
 });

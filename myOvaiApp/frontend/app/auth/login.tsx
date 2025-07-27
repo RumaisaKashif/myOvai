@@ -88,7 +88,7 @@ export default function LoginScreen() {
         return;
       }
       console.log('Login successful.');
-      router.replace('../(tabs)');
+      router.replace('../onboarding-screen');
     } catch (err) {
       const errorMessage = err instanceof FirebaseError ? 'Authentication error.' : 'An unknown error occurred';
       setError(errorMessage);
