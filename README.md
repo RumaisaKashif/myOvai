@@ -1,5 +1,5 @@
 # myOvai
-## Orbital'25 Project
+## AI-powered Menstrual Health Tracking App
 
 Thank you for taking out the time to try out myOvai, a period tracking app set to revolutionise menstrual healthcare. Here are step-by-step guidelines to access our prototype:
 1. Download Expo Go app from PlayStore (Android) or App Store (iOS).
